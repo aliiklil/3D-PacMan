@@ -7,59 +7,7 @@ function main() {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	gl.enable(gl.DEPTH_TEST);
 
-	
-	
-	var selectedShader = 0;	// 0 is gouraud diffuse, 1 is gouraud specular, 2 is phong diffuse, 3 is phong specular
-	var programs = [];
-	
-	for(var i = 0; i < 4; i++) {
-		programs.push(gl.createProgram());
-	}
-
-	//Gouraud diffuse
-	var gouraudDiffuseVertexShader = gl.createShader(gl.VERTEX_SHADER);
-	var gouraudDiffuseFragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-
-	gl.shaderSource(gouraudDiffuseVertexShader, document.getElementById("gouraudDiffuseVertexShader").text);
-	gl.shaderSource(gouraudDiffuseFragmentShader, document.getElementById("gouraudDiffuseFragmentShader").text);
-	
-	gl.compileShader(gouraudDiffuseVertexShader);
-	gl.compileShader(gouraudDiffuseFragmentShader);
-	
-	gl.attachShader(programs[0], gouraudDiffuseVertexShader);
-	gl.attachShader(programs[0], gouraudDiffuseFragmentShader);
-	gl.linkProgram(programs[0]);
-
-	
-	//Gouraud specular
-	var gouraudSpecularVertexShader = gl.createShader(gl.VERTEX_SHADER);
-	var gouraudSpecularFragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-
-	gl.shaderSource(gouraudSpecularVertexShader, document.getElementById("gouraudSpecularVertexShader").text);
-	gl.shaderSource(gouraudSpecularFragmentShader, document.getElementById("gouraudSpecularFragmentShader").text);
-
-	gl.compileShader(gouraudSpecularVertexShader);
-	gl.compileShader(gouraudSpecularFragmentShader);
-	
-	gl.attachShader(programs[1], gouraudSpecularVertexShader);
-	gl.attachShader(programs[1], gouraudSpecularFragmentShader);
-	gl.linkProgram(programs[1]);
-
-	
-	//Phong diffuse
-	var phongDiffuseVertexShader = gl.createShader(gl.VERTEX_SHADER);
-	var phongDiffuseFragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-
-	gl.shaderSource(phongDiffuseVertexShader, document.getElementById("phongDiffuseVertexShader").text);
-	gl.shaderSource(phongDiffuseFragmentShader, document.getElementById("phongDiffuseFragmentShader").text);
-
-	gl.compileShader(phongDiffuseVertexShader);
-	gl.compileShader(phongDiffuseFragmentShader);
-
-	gl.attachShader(programs[2], phongDiffuseVertexShader);
-	gl.attachShader(programs[2], phongDiffuseFragmentShader);
-	gl.linkProgram(programs[2]);
-
+	var program = gl.createProgram();
 	
 	//Phong specular
 	var phongSpecularVertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -71,12 +19,12 @@ function main() {
 	gl.compileShader(phongSpecularVertexShader);
 	gl.compileShader(phongSpecularFragmentShader);
 	
-	gl.attachShader(programs[3], phongSpecularVertexShader);
-	gl.attachShader(programs[3], phongSpecularFragmentShader);
-	gl.linkProgram(programs[3]);
+    gl.attachShader(program, phongSpecularVertexShader);
+    gl.attachShader(program, phongSpecularFragmentShader);
+    gl.linkProgram(program);
 
-	//Use gouraud diffuse vertex and fragment shader
-	gl.useProgram(programs[0]);
+       //Use gouraud diffuse vertex and fragment shader
+    gl.useProgram(program);
 	
 	
 	
@@ -154,6 +102,7 @@ function main() {
 
 	var viewMatrix = new Float32Array(16);
 	var projectionMatrix = new Float32Array(16);
+	var projectionMatrix = new Float32Array(16);
 	
 	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [16, 0, 0], [0, 1, 0]);
 	glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
@@ -161,8 +110,8 @@ function main() {
 	
 	
 	//Get location of attributes and set them
-	var positionAttribLocation = gl.getAttribLocation(programs[selectedShader], 'vertexPosition');
-	var normalAttribLocation = gl.getAttribLocation(programs[selectedShader], 'vertexNormal');
+    var positionAttribLocation = gl.getAttribLocation(program, 'vertexPosition');
+    var normalAttribLocation = gl.getAttribLocation(program, 'vertexNormal');
 
 	var sphereVertexBuffer = gl.createBuffer();	
 	var axisVertexBuffer = gl.createBuffer();
@@ -191,20 +140,21 @@ function main() {
 		
 		gl.clearColor(0.9, 0.9, 0.9, 1.0);
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-		gl.useProgram(programs[selectedShader]);
+		gl.useProgram(program);
 		
-		var globalRotationMatrixUniformLocation = gl.getUniformLocation(programs[selectedShader], 'globalRotationMatrix');
-		var scalingMatrixUniformLocation = gl.getUniformLocation(programs[selectedShader], 'scalingMatrix');
-		var rotationMatrixUniformLocation = gl.getUniformLocation(programs[selectedShader], 'rotationMatrix');
-		var translationMatrixUniformLocation = gl.getUniformLocation(programs[selectedShader], 'translationMatrix');
-		var viewMatrixUniformLocation = gl.getUniformLocation(programs[selectedShader], 'viewMatrix');
-		var projectionMatrixUniformLocation = gl.getUniformLocation(programs[selectedShader], 'projectionMatrix');
-		var ambientColorUniformLocation = gl.getUniformLocation(programs[selectedShader], 'ambientColor');
-		var diffuseColorUniformLocation = gl.getUniformLocation(programs[selectedShader], 'diffuseColor');
-		var specularColorUniformLocation = gl.getUniformLocation(programs[selectedShader], 'specularColor');
-		var lightPositionUniformLocation = gl.getUniformLocation(programs[selectedShader], 'lightPosition');
-		var cameraPositionUniformLocation = gl.getUniformLocation(programs[selectedShader], 'cameraPosition');
-		console.log(projectionMatrix)
+		var globalRotationMatrixUniformLocation = gl.getUniformLocation(program, 'globalRotationMatrix');
+		var scalingMatrixUniformLocation = gl.getUniformLocation(program, 'scalingMatrix');
+		var rotationMatrixUniformLocation = gl.getUniformLocation(program, 'rotationMatrix');
+		var translationMatrixUniformLocation = gl.getUniformLocation(program, 'translationMatrix');
+		var viewMatrixUniformLocation = gl.getUniformLocation(program, 'viewMatrix');
+		var projectionMatrixUniformLocation = gl.getUniformLocation(program, 'projectionMatrix');
+		var ambientColorUniformLocation = gl.getUniformLocation(program, 'ambientColor');
+		var diffuseColorUniformLocation = gl.getUniformLocation(program, 'diffuseColor');
+		var specularColorUniformLocation = gl.getUniformLocation(program, 'specularColor');
+		var lightPositionUniformLocation = gl.getUniformLocation(program, 'lightPosition');
+		var cameraPositionUniformLocation = gl.getUniformLocation(program, 'cameraPosition');
+		
+
 		for (var i = 0; i < numberOfSpheres; i++) { 
 		
 			//Draw sphere
