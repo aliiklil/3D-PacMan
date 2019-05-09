@@ -115,10 +115,10 @@ function main() {
 					
 	const cubeColors = 
 	[
-		0.5, 0.0, 0.5,
-		0.5, 0.0, 0.5,
-		0.5, 0.0, 0.5,
-		0.5, 0.0, 0.5,
+		0.5, 0.2, 0.5,
+		0.5, 0.2, 0.5,
+		0.5, 0.2, 0.5,
+		0.5, 0.2, 0.5,
 
 		0.0, 0.3, 0.7,
 		0.0, 0.3, 0.7,
@@ -179,7 +179,7 @@ function main() {
 	for(var i = 0; i < labyrinth.length; i++) {
 		for(var j = 0; j < labyrinth[0].length; j++) {
 			if(labyrinth[i][j] == 1) {
-				glMatrix.mat4.translate(cubeTranslationMatrices[i][j], cubeTranslationMatrices[i][j], [2*i-16, 0, 2*j-16]);
+				glMatrix.mat4.translate(cubeTranslationMatrices[i][j], cubeTranslationMatrices[i][j], [2*(labyrinth.length-1-i)-15.5, 0, 2*j-15.5]);
 			}
 		}
 	}
