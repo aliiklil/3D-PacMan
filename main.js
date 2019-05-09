@@ -179,7 +179,7 @@ function main() {
 	for(var i = 0; i < labyrinth.length; i++) {
 		for(var j = 0; j < labyrinth[0].length; j++) {
 			if(labyrinth[i][j] == 1) {
-				glMatrix.mat4.translate(cubeTranslationMatrices[i][j], cubeTranslationMatrices[i][j], [2*(labyrinth.length-1-i)-15.5, 0, 2*j-15.5]);
+				glMatrix.mat4.translate(cubeTranslationMatrices[i][j], cubeTranslationMatrices[i][j], [2*(labyrinth.length-1-i)-15.5, 1, 2*j-15.5]);
 			}
 		}
 	}
