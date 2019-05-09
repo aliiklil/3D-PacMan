@@ -389,23 +389,18 @@ function main() {
 		if(!cameraSelected) {
 			//Translation
 			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0.1, 0, 0]);
+				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, 0.1]);
 			}
 			if (key.keyCode == "37") { //Arrow left
-			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-0.1, 0, 0]);
-			}
-			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0.1, 0]);
-			}
-			if (key.keyCode == "40") { //Arrow down
-			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, -0.1, 0]);
-			}
-			if (key.keyCode == "188") { //Comma
-			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, 0.1]);
-			}
-			if (key.keyCode == "190") { //Point
 				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, -0.1]);
 			}
+			if (key.keyCode == "38") { //Arrow up
+				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0.1, 0, 0]);
+			}
+			if (key.keyCode == "40") { //Arrow down
+			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-0.1, 0, 0]);
+			}
+
 
 		}
 		
