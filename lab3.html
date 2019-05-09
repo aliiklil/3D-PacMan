@@ -11,9 +11,6 @@
 			attribute vec3 vertexNormal;
 			attribute vec3 vertexColor;
 			
-			uniform mat4 globalRotationMatrix;
-		
-			uniform mat4 scalingMatrix;
 			uniform mat4 rotationMatrix;
 			uniform mat4 translationMatrix;
 			
@@ -26,10 +23,10 @@
 			
 			void main(){
 	
-				gl_Position = projectionMatrix * viewMatrix * globalRotationMatrix * translationMatrix * rotationMatrix * scalingMatrix * vec4(vertexPosition, 1.0);
+				gl_Position = projectionMatrix * viewMatrix * translationMatrix * rotationMatrix * vec4(vertexPosition, 1.0);
 				
-				mat4 transformationMatrix =  globalRotationMatrix * translationMatrix * rotationMatrix * scalingMatrix;
-				mat4 combinedRotationMatrix = globalRotationMatrix * rotationMatrix;  // Will be used for the normal vectors, where scalings and translations are not important
+				mat4 transformationMatrix = translationMatrix * rotationMatrix;
+				mat4 combinedRotationMatrix = rotationMatrix;  // Will be used for the normal vectors, where translations are not important
 				
 				vertexPositionVarying = vec3(transformationMatrix * vec4(vertexPosition, 1.0));
 				vertexNormalVarying = vec3(combinedRotationMatrix * vec4(vertexNormal, 1.0));
