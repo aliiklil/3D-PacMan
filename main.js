@@ -237,8 +237,6 @@ function main() {
 	var colorBuffer = gl.createBuffer();
 	var indexBuffer = gl.createBuffer();
 
-	var cameraSelected = false;
-	
 	var loop = function () {
 		
 		gl.clearColor(0.9, 0.9, 0.9, 1.0);
@@ -340,14 +338,6 @@ function main() {
 	
 	document.onkeydown = function(event) {
 		var key_press = String.fromCharCode(event.keyCode);
-		if(event.keyCode == 67) {
-			if(cameraSelected) {
-				cameraSelected = false;
-			} else { 
-				cameraSelected = true;
-			}
-				
-		}
 	}
 	
 	window.addEventListener("keyup", function(event) {
@@ -357,53 +347,21 @@ function main() {
 	window.addEventListener("keydown", checkKeyPress, false);
 	
 	function checkKeyPress(key) {
-
-		if(cameraSelected) {
-			//Translation of camera
-			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
-				cameraPosition = [cameraPosition[0] + 0.1, cameraPosition[1], cameraPosition[2]];
-			}
-			if (key.keyCode == "37") { //Arrow left
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
-				cameraPosition = [cameraPosition[0] - 0.1, cameraPosition[1], cameraPosition[2]];
-			}
-			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, -0.1, 0]);
-				cameraPosition = [cameraPosition[0], cameraPosition[1] + 0.1, cameraPosition[2]];
-			}
-			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0.1, 0]);
-				cameraPosition = [cameraPosition[0], cameraPosition[1] - 0.1, cameraPosition[2]];
-			}
-			if (key.keyCode == "188") { //Comma
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
-				cameraPosition = [cameraPosition[0], cameraPosition[1], cameraPosition[2] + 0.1];
-			}
-			if (key.keyCode == "190") { //Point
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
-				cameraPosition = [cameraPosition[0], cameraPosition[1], cameraPosition[2] - 0.1];
-			}
-		}
 	
-		if(!cameraSelected) {
-			//Translation
-			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, 0.1]);
-			}
-			if (key.keyCode == "37") { //Arrow left
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, -0.1]);
-			}
-			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0.1, 0, 0]);
-			}
-			if (key.keyCode == "40") { //Arrow down
-			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-0.1, 0, 0]);
-			}
-
-
+		//Translation
+		if (key.keyCode == "39") { //Arrow right
+			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, 0.1]);
 		}
-		
+		if (key.keyCode == "37") { //Arrow left
+			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, -0.1]);
+		}
+		if (key.keyCode == "38") { //Arrow up
+			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0.1, 0, 0]);
+		}
+		if (key.keyCode == "40") { //Arrow down
+		glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-0.1, 0, 0]);
+		}
+
 	}
 };
 
