@@ -24,6 +24,9 @@ function main() {
 
     gl.useProgram(program);
 	
+	var identityMatrix = new Float32Array(16);
+	glMatrix.mat4.identity(identityMatrix);
+	
 	var groundPlaneVertices = [
 		16, 0, 16,
 		16, 0, -16,
@@ -75,8 +78,6 @@ function main() {
 		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 	];
 	
-	
-	
 	const cubeVertices =
 	[
 		1.0, 1.0, 1.0,   
@@ -109,6 +110,8 @@ function main() {
 		1.0, 1.0, -1.0,   
 		1.0, -1.0, -1.0
 	];
+	
+	const cubeNormals = cubeVertices.slice();
 					
 	const cubeColors = 
 	[
@@ -117,30 +120,30 @@ function main() {
 		0.5, 0.0, 0.5,
 		0.5, 0.0, 0.5,
 
-		0.5, 1.0, 0.0,
-		0.5, 1.0, 0.0,
-		0.5, 1.0, 0.0,
-		0.5, 1.0, 0.0,
+		0.0, 0.3, 0.7,
+		0.0, 0.3, 0.7,
+		0.0, 0.3, 0.7,
+		0.0, 0.3, 0.7,
 
-		0.5, 0.0, 0.5,
-		0.5, 0.0, 0.5,
-		0.5, 0.0, 0.5,
-		0.5, 0.0, 0.5,
+		0.9, 0.0, 0.6,
+		0.9, 0.0, 0.6,
+		0.9, 0.0, 0.6,
+		0.9, 0.0, 0.6,
 		
-		0.0, 0.5, 1.0,
-		0.0, 0.5, 1.0,
-		0.0, 0.5, 1.0,
-		0.0, 0.5, 1.0,
+		0.4, 0.2, 0.4,
+		0.4, 0.2, 0.4,
+		0.4, 0.2, 0.4,
+		0.4, 0.2, 0.4,
 
-		1.0, 0.5, 0.0,
-		1.0, 0.5, 0.0,
-		1.0, 0.5, 0.0,
-		1.0, 0.5, 0.0,
+		0.9, 0.3, 0.8,
+		0.9, 0.3, 0.8,
+		0.9, 0.3, 0.8,
+		0.9, 0.3, 0.8,
 		
-		0.0, 0.5, 0.5,
-		0.0, 0.5, 0.5,
-		0.0, 0.5, 0.5,
-		0.0, 0.5, 0.5
+		0.0, 0.0, 0.3,
+		0.0, 0.0, 0.3,
+		0.0, 0.0, 0.3,
+		0.0, 0.0, 0.3
 	];
 	
 	const cubeIndices =
@@ -163,6 +166,27 @@ function main() {
 		21, 20, 22,
 		22, 20, 23
 	];
+	
+	var cubeTranslationMatrices = [];
+
+	for(var i = 0; i < labyrinth.length; i++) {
+		cubeTranslationMatrices.push([]);
+		for(var j = 0; j < labyrinth[0].length; j++) {
+			 cubeTranslationMatrices[i].push(identityMatrix.slice());
+		}
+	}
+	
+	for(var i = 0; i < labyrinth.length; i++) {
+		for(var j = 0; j < labyrinth[0].length; j++) {
+			if(labyrinth[i][j] == 1) {
+				glMatrix.mat4.translate(cubeTranslationMatrices[i][j], cubeTranslationMatrices[i][j], [2*i-16, 0, 2*j-16]);
+			}
+		}
+	}
+	
+	console.log(cubeTranslationMatrices)
+
+	
 	
 	var sphereVertices = [];
 	var sphereNormals = [];
@@ -236,6 +260,8 @@ function main() {
 	var normalBuffer = gl.createBuffer();
 	var colorBuffer = gl.createBuffer();
 	var indexBuffer = gl.createBuffer();
+	
+	var cameraSelected = false;
 
 	var loop = function () {
 		
@@ -323,8 +349,43 @@ function main() {
 		gl.drawElements(gl.TRIANGLES, sphereIndices.length, gl.UNSIGNED_SHORT, 0);
 
 
-
 		
+		
+		//Draw cubes
+		for(var i = 0; i < labyrinth.length; i++) {
+			for(var j = 0; j < labyrinth[0].length; j++) {
+				if(labyrinth[i][j] == 1) {
+					
+					gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+					gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, cubeTranslationMatrices[i][j]);
+					gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+					gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+					gl.uniform3fv(specularColorUniformLocation, specularColor);
+					gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+					gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+							
+					gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeNormals), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeColors), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+					gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeIndices), gl.STATIC_DRAW);
+					
+					gl.drawElements(gl.TRIANGLES, cubeIndices.length, gl.UNSIGNED_SHORT, 0);
+					
+				}
+			}
+		}
 
 		
 		
@@ -338,6 +399,14 @@ function main() {
 	
 	document.onkeydown = function(event) {
 		var key_press = String.fromCharCode(event.keyCode);
+		
+		if(event.keyCode == 67) {
+			if(cameraSelected)
+				cameraSelected = false;
+			else
+				cameraSelected = true;
+		}
+		
 	}
 	
 	window.addEventListener("keyup", function(event) {
@@ -348,18 +417,44 @@ function main() {
 	
 	function checkKeyPress(key) {
 	
+		if(cameraSelected) {
+			//Translation of camera
+			if (key.keyCode == "39") { //Arrow right
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
+			}
+			if (key.keyCode == "37") { //Arrow left
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
+			}
+			if (key.keyCode == "38") { //Arrow up
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, -0.1, 0]);
+			}
+			if (key.keyCode == "40") { //Arrow down
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0.1, 0]);
+			}
+			if (key.keyCode == "188") { //Comma
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
+			}
+			if (key.keyCode == "190") { //Point
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
+			}
+		}
+	
+	
+		
 		//Translation
-		if (key.keyCode == "39") { //Arrow right
-			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, 0.1]);
-		}
-		if (key.keyCode == "37") { //Arrow left
-			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, -0.1]);
-		}
-		if (key.keyCode == "38") { //Arrow up
-			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0.1, 0, 0]);
-		}
-		if (key.keyCode == "40") { //Arrow down
-		glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-0.1, 0, 0]);
+		if(!cameraSelected) {
+			if (key.keyCode == "39") { //Arrow right
+				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, 0.1]);
+			}
+			if (key.keyCode == "37") { //Arrow left
+				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, -0.1]);
+			}
+			if (key.keyCode == "38") { //Arrow up
+				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0.1, 0, 0]);
+			}
+			if (key.keyCode == "40") { //Arrow down
+			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-0.1, 0, 0]);
+			}
 		}
 
 	}
