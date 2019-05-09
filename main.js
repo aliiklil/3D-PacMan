@@ -31,11 +31,18 @@ function main() {
 		-32, 0, 32
 	];
 		
-	var groundPlaneNormalsForVertices = [
+	var groundPlaneNormals = [
 		0, 1, 0,
 		0, 1, 0,
 		0, 1, 0,
 		0, 1, 0
+	];
+	
+	var groundPlaneColors = [
+		0.8, 0.8, 0.8,
+		0.8, 0.8, 0.8,
+		0.8, 0.8, 0.8,
+		0.8, 0.8, 0.8
 	];
 	
 	var groundPlaneIndices = [
@@ -46,7 +53,8 @@ function main() {
 	const numberOfSpheres = 1;
 	
 	var sphereVertices = [];
-	var sphereNormalsForVertices = [];
+	var sphereNormals = [];
+	var sphereColors = [];
 	var sphereIndices = [];
 	
 	var latLongCount = 30; // Count of latitudes and longitudes
@@ -60,6 +68,8 @@ function main() {
 			sphereVertices.push(Math.sin(theta) * Math.cos(phi));
 			sphereVertices.push(Math.cos(theta) * Math.cos(phi));
 			sphereVertices.push(Math.sin(phi));
+			
+			sphereColors.push(1, 1, 0);
 			
 			if (i < latLongCount && j < latLongCount) {
 			
@@ -75,9 +85,9 @@ function main() {
 		}
 	}
 
-	sphereNormalsForVertices = sphereVertices.slice(); // The normals and the vertices are the same for the sphere
+	sphereNormals = sphereVertices.slice(); // The normals and the vertices are the same for the sphere
 
-	var ambientColor = [0.3, 0.3, 0.3];
+	var ambientColor = [0.5, 0.5, 0.5];
 	var diffuseColor = [0.5, 0.5, 0.5];
 	var specularColor = [0.1, 0.1, 0.1];
 	
@@ -118,8 +128,12 @@ function main() {
 	var normalAttribLocation = gl.getAttribLocation(program, 'vertexNormal');
 	gl.enableVertexAttribArray(normalAttribLocation);
 	
+	var colorAttribLocation = gl.getAttribLocation(program, 'vertexColor');
+	gl.enableVertexAttribArray(colorAttribLocation);
+	
 	var vertexBuffer = gl.createBuffer();	
 	var normalBuffer = gl.createBuffer();
+	var colorBuffer = gl.createBuffer();
 	var indexBuffer = gl.createBuffer();
 
 	
@@ -171,8 +185,12 @@ function main() {
 		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereNormalsForVertices), gl.STATIC_DRAW);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereNormals), gl.STATIC_DRAW);
 		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 		
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(sphereIndices), gl.STATIC_DRAW);
@@ -186,8 +204,12 @@ function main() {
 		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneNormalsForVertices), gl.STATIC_DRAW);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneNormals), gl.STATIC_DRAW);
 		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(groundPlaneIndices), gl.STATIC_DRAW);

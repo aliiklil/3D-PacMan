@@ -9,6 +9,7 @@
 			
 			attribute vec3 vertexPosition;
 			attribute vec3 vertexNormal;
+			attribute vec3 vertexColor;
 			
 			uniform mat4 globalRotationMatrix;
 		
@@ -21,6 +22,7 @@
 						
 			varying vec3 vertexPositionVarying; 
 			varying vec3 vertexNormalVarying;
+			varying vec3 vertexColorVarying;
 			
 			void main(){
 	
@@ -31,7 +33,7 @@
 				
 				vertexPositionVarying = vec3(transformationMatrix * vec4(vertexPosition, 1.0));
 				vertexNormalVarying = vec3(combinedRotationMatrix * vec4(vertexNormal, 1.0));
-
+				vertexColorVarying = vertexColor;
 			}
 					
 		</script>
@@ -47,7 +49,8 @@
 
 			varying vec3 vertexPositionVarying; 
 			varying vec3 vertexNormalVarying;
-
+			varying vec3 vertexColorVarying;
+			
 			void main(){
 				
 				vec3 normalVector = normalize(vertexNormalVarying);
@@ -63,7 +66,7 @@
 					specularDotProduct = 0.0; 
 				}
 				specularDotProduct = 0.0; 
-				gl_FragColor = vec4(ambientColor + diffuseDotProduct * diffuseColor + specularDotProduct * specularColor, 1.0);
+				gl_FragColor = vec4(vertexColorVarying * ambientColor + vertexColorVarying * diffuseDotProduct * diffuseColor + vertexColorVarying * specularDotProduct * specularColor, 1.0);
 			  
 			}
 		</script>
