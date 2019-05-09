@@ -56,13 +56,13 @@
 								
 				vec3 reflectionVector = reflect(-lightVector, normalVector);
 				vec3 viewVector = normalize(cameraPosition - vertexPositionVarying);
-				float shininess = 20.0;
+				float shininess = 1.0;
 				float specularDotProduct = pow(max(dot(reflectionVector, viewVector), 0.0), shininess);
 					
 				if(diffuseDotProduct == 0.0) { //Otherwise we have the specular light also on the opposite side of the sphere
 					specularDotProduct = 0.0; 
 				}
-			
+				specularDotProduct = 0.0; 
 				gl_FragColor = vec4(ambientColor + diffuseDotProduct * diffuseColor + specularDotProduct * specularColor, 1.0);
 			  
 			}

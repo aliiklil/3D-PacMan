@@ -9,7 +9,6 @@ function main() {
 
 	var program = gl.createProgram();
 	
-	//Phong specular
 	var phongSpecularVertexShader = gl.createShader(gl.VERTEX_SHADER);
 	var phongSpecularFragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
@@ -23,12 +22,28 @@ function main() {
     gl.attachShader(program, phongSpecularFragmentShader);
     gl.linkProgram(program);
 
-       //Use gouraud diffuse vertex and fragment shader
     gl.useProgram(program);
 	
+	var groundPlaneVertices = [
+		32, 0, 32,
+		32, 0, -32,
+		-32, 0, -32,
+		-32, 0, 32
+	];
+		
+	var groundPlaneNormalsForVertices = [
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0
+	];
 	
+	var groundPlaneIndices = [
+		0, 1, 3,
+		3, 1, 2
+		];
 	
-	const numberOfSpheres = 9;
+	const numberOfSpheres = 1;
 	
 	var sphereVertices = [];
 	var sphereNormalsForVertices = [];
@@ -62,22 +77,12 @@ function main() {
 
 	sphereNormalsForVertices = sphereVertices.slice(); // The normals and the vertices are the same for the sphere
 
-	// Vertices for drawing the local coordinate system for the selected sphere
-	const axisVertices = [
-		0,0,0,
-		2,0,0,
-		0,0,0,
-		0,2,0,
-		0,0,0,
-		0,0,2
-	];			
-
-	var ambientColor = [0.3, 0.1, 0.1];
+	var ambientColor = [0.3, 0.3, 0.3];
 	var diffuseColor = [0.5, 0.5, 0.5];
-	var specularColor = [1.0, 1.0, 1.0];
+	var specularColor = [0.1, 0.1, 0.1];
 	
-	var lightPosition = [0, 10, 0];
-	var cameraPosition = [16, 0, 15];
+	var lightPosition = [0, 20, 0];
+	var cameraPosition = [0, 30, 0];
 	
 	//Create uniform matrices
 	var globalRotationMatrix = new Float32Array(16);
@@ -102,33 +107,27 @@ function main() {
 
 	var viewMatrix = new Float32Array(16);
 	var projectionMatrix = new Float32Array(16);
-	var projectionMatrix = new Float32Array(16);
 	
-	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [16, 0, 0], [0, 1, 0]);
+	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0.01, 0, 0], [0, 1, 0]);
 	glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
 	
-	
-	
-	//Get location of attributes and set them
+
     var positionAttribLocation = gl.getAttribLocation(program, 'vertexPosition');
-    var normalAttribLocation = gl.getAttribLocation(program, 'vertexNormal');
-
-	var sphereVertexBuffer = gl.createBuffer();	
-	var axisVertexBuffer = gl.createBuffer();
-	
-	var sphereNormalBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, sphereNormalBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereNormalsForVertices), gl.STATIC_DRAW);
-	
-	gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-	
-
-	var sphereIndexBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, sphereIndexBuffer);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(sphereIndices), gl.STATIC_DRAW);
-
 	gl.enableVertexAttribArray(positionAttribLocation);
+	
+	var normalAttribLocation = gl.getAttribLocation(program, 'vertexNormal');
 	gl.enableVertexAttribArray(normalAttribLocation);
+	
+	var vertexBuffer = gl.createBuffer();	
+	var normalBuffer = gl.createBuffer();
+	var indexBuffer = gl.createBuffer();
+
+	
+	
+
+	
+	
+
 	
 	var selectedSphere = 0;
 	var allSpheresSelected = false;
@@ -153,64 +152,54 @@ function main() {
 		var specularColorUniformLocation = gl.getUniformLocation(program, 'specularColor');
 		var lightPositionUniformLocation = gl.getUniformLocation(program, 'lightPosition');
 		var cameraPositionUniformLocation = gl.getUniformLocation(program, 'cameraPosition');
-		
-
-		for (var i = 0; i < numberOfSpheres; i++) { 
-		
-			//Draw sphere
-			gl.bindBuffer(gl.ARRAY_BUFFER, sphereVertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereVertices), gl.STATIC_DRAW);
-								
-			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-			gl.uniformMatrix4fv(globalRotationMatrixUniformLocation, gl.FALSE, globalRotationMatrix);
-			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, scalingMatrices[i]);
-			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, rotationMatrices[i]);
-			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, translationMatrices[i]);
-			gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-			gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-			gl.uniform3fv(specularColorUniformLocation, specularColor);
-			gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-			gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
-					
-			gl.drawElements(gl.TRIANGLES, sphereIndices.length, gl.UNSIGNED_SHORT, 0);
-
-			if(allSpheresSelected && !cameraSelected && !lightSelected) {
-				//Draw local coordinate system axis for all spheres
-				gl.bindBuffer(gl.ARRAY_BUFFER, axisVertexBuffer);
-				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(axisVertices), gl.STATIC_DRAW);
-
-				gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-				gl.drawArrays(gl.LINES, 0, 6);
-			}
-			
-		}
-		
-		//Draw local coordinate system axis for selected sphere only
-		if(!allSpheresSelected && !cameraSelected && !lightSelected) {
-			gl.bindBuffer(gl.ARRAY_BUFFER, axisVertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(axisVertices), gl.STATIC_DRAW);
-			
-			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-	
-			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-			gl.uniformMatrix4fv(globalRotationMatrixUniformLocation, gl.FALSE, globalRotationMatrix);
-			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, scalingMatrices[selectedSphere]);
-			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, rotationMatrices[selectedSphere]);
-			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, translationMatrices[selectedSphere]);
-			gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-			gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-			gl.uniform3fv(specularColorUniformLocation, specularColor);
-			gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-			gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
-			
-			gl.drawArrays(gl.LINES, 0, 6);
-		}
+						
+		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		gl.uniformMatrix4fv(globalRotationMatrixUniformLocation, gl.FALSE, globalRotationMatrix);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, scalingMatrices[0]);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, rotationMatrices[0]);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, translationMatrices[0]);
+		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+		gl.uniform3fv(specularColorUniformLocation, specularColor);
+		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 				
+		//Draw sphere
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereNormalsForVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(sphereIndices), gl.STATIC_DRAW);
+		
+		gl.drawElements(gl.TRIANGLES, sphereIndices.length, gl.UNSIGNED_SHORT, 0);
+
+
+		//Draw ground plane
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneNormalsForVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(groundPlaneIndices), gl.STATIC_DRAW);
+
+		gl.drawElements(gl.TRIANGLES, groundPlaneIndices.length, gl.UNSIGNED_SHORT, 0);
+		
+
+		
+		
+		
+		
+	
 		requestAnimationFrame(loop);
 	};
 	requestAnimationFrame(loop);
@@ -314,26 +303,7 @@ function main() {
 	window.addEventListener("keydown", checkKeyPress, false);
 	
 	function checkKeyPress(key) {
-	
-		//Gouraud diffuse
-		if(key.keyCode == "85") {
-				selectedShader = 0;
-		}
-		
-		//Gouraud specular
-		if(key.keyCode == "73") {
-				selectedShader = 1;
-		}
-			
-		//Phong diffuse
-		if(key.keyCode == "79") {
-				selectedShader = 2;
-		}
-			
-		//Phong specular
-		if(key.keyCode == "80") {
-				selectedShader = 3;
-		}
+
 		
 		if(lightSelected) {
 			//Translation of camera
