@@ -239,6 +239,7 @@ function main() {
 	
 	glMatrix.mat4.identity(sphereRotationMatrix);
 	glMatrix.mat4.identity(sphereTranslationMatrix);
+	glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-1.5, 0, -1.5]);
 	
 	var viewMatrix = new Float32Array(16);
 	var projectionMatrix = new Float32Array(16);
