@@ -188,63 +188,82 @@ function main() {
 
 	
 	
-	var sphereVertices = [];
-	var sphereNormals = [];
-	var sphereColors = [];
-	var sphereIndices = [];
+	var halfSphereVertices = [];
+	var halfSphereNormals = [];
+	var halfSphereColors = [];
+	var halfSphereIndices = [];
 	
-	var latLongCount = 10; // Count of latitudes and longitudes
+	var latLongCount = 20; // Count of latitudes and longitudes
 
-	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the sphere
+	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the halfSphere
 		for (var j = 0; j <= latLongCount; j++) {
 		
 			var theta = i * Math.PI / latLongCount;
 			var phi = j * 2 * Math.PI/2 / latLongCount;
 
-			sphereVertices.push(Math.sin(theta) * Math.cos(phi));
-			sphereVertices.push(Math.cos(theta) * Math.cos(phi));
-			sphereVertices.push(Math.sin(phi));
+			halfSphereVertices.push(Math.sin(theta) * Math.cos(phi));
+			halfSphereVertices.push(Math.cos(theta) * Math.cos(phi));
+			halfSphereVertices.push(Math.sin(phi));
 			
-			sphereColors.push(1, 1, 0);
+			halfSphereColors.push(1, 1, 0);
 			
 			if (i < latLongCount && j < latLongCount) {
 			
-				sphereIndices.push(i * (latLongCount + 1) + j);
-				sphereIndices.push(i * (latLongCount + 1) + j + 1);
-				sphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
+				halfSphereIndices.push(i * (latLongCount + 1) + j);
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
 				
-				sphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
-				sphereIndices.push(i * (latLongCount + 1) + j + 1);
-				sphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
 				
 			}
 		}
 	}
+	
+	halfSphereVertices.push(0, 0, 0);
+	
+	for (var i = 0; i <= latLongCount+1; i++) {
+		for (var j = 0; j <= latLongCount+1; j++) {
+		halfSphereIndices.push(halfSphereVertices.length);
+		halfSphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
+		halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
+		}
+	}
 
-	sphereNormals = sphereVertices.slice(); // The normals and the vertices are the same for the sphere
+	halfSphereNormals = halfSphereVertices.slice(); // The normals and the vertices are the same for the halfSphere
 
 	var ambientColor = [0.5, 0.5, 0.5];
 	var diffuseColor = [0.5, 0.5, 0.5];
 	var specularColor = [0.1, 0.1, 0.1];
 	
 	var lightPosition = [0, 20, -20];
-	var cameraPosition = [0, 5, 0];
+	var cameraPosition = [-3, 1, -1.5];
 	
 	//Create uniform matrices
 	var globalRotationMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(globalRotationMatrix);
 
-	var sphereRotationMatrix = new Float32Array(16);
-	var sphereTranslationMatrix = new Float32Array(16);
+	var halfSphereRotationMatrices = [];
+	var halfSphereTranslationMatrices = [];
 	
-	glMatrix.mat4.identity(sphereRotationMatrix);
-	glMatrix.mat4.identity(sphereTranslationMatrix);
-	glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-1.5, 0, -1.5]);
+	for(var i = 0; i < 2; i++) {
+		halfSphereRotationMatrices.push(identityMatrix.slice());
+		halfSphereTranslationMatrices.push(identityMatrix.slice());
+	}
+	
+	glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-1.5, 1, -1.5]);
+	glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
+	//glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(-90), [0, 1, 0]);
+	
+	glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-1.5, 1, -1.5]);
+	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
+	//glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [0, 1, 0]);
 	
 	var viewMatrix = new Float32Array(16);
 	var projectionMatrix = new Float32Array(16);
 	
-	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0.01, 0, 0], [0, 1, 0]);
+	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 1, -1], [0, 1, 0]);
 	glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
 	
 
@@ -263,10 +282,7 @@ function main() {
 	var indexBuffer = gl.createBuffer();
 	
 	var cameraSelected = false;
-
-	glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
-	glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 1, 0]);		
-	
+		
 	var loop = function () {
 		
 		gl.clearColor(0.9, 0.9, 0.9, 1.0);
@@ -323,35 +339,35 @@ function main() {
 		
 		
 		
-
-		//Draw sphere			
-		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, sphereRotationMatrix);
-		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, sphereTranslationMatrix);
-		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-		gl.uniform3fv(specularColorUniformLocation, specularColor);
-		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
-				
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereVertices), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereNormals), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sphereColors), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-		
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(sphereIndices), gl.STATIC_DRAW);
-		
-		gl.drawElements(gl.TRIANGLES, sphereIndices.length, gl.UNSIGNED_SHORT, 0);
-
+		for(var i = 0; i < 2; i++) {
+			//Draw halfSphere			
+			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[i]);
+			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[i]);
+			gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+			gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+			gl.uniform3fv(specularColorUniformLocation, specularColor);
+			gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+			gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+					
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereVertices), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereNormals), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereColors), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(halfSphereIndices), gl.STATIC_DRAW);
+			
+			gl.drawElements(gl.TRIANGLES, halfSphereIndices.length, gl.UNSIGNED_SHORT, 0);
+		}
 
 		
 		
@@ -448,42 +464,42 @@ function main() {
 		//Translation
 		if(!cameraSelected) {
 			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, 0.1]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrix[0], [0, 0, 0.1]);
 			}
 			if (key.keyCode == "37") { //Arrow left
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0, -0.1]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
 			}
 			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0.1, 0, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);
 			}
 			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-0.1, 0, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);
 			}
 			if (key.keyCode == "188") { //Comma
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0.1, 0]);				
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0.1, 0]);				
 			}
 			if (key.keyCode == "190") { //Point
-				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, -0.1, 0]);				
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -0.1, 0]);				
 			}
 			
 			
 			if (key.keyCode == "87") { //w key		
-				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, -0.1, [1, 0, 0]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [1, 0, 0]);
 			}
 			if (key.keyCode == "83") { //s key				
-				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, 0.1, [1, 0, 0]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [1, 0, 0]);
 			}
 			if (key.keyCode == "81") { //e key		
-				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, -0.1, [0, 1, 0]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 1, 0]);
 			}
 			if (key.keyCode == "69") { //q key				
-				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, 0.1, [0, 1, 0]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 1, 0]);
 			}
 			if (key.keyCode == "68") { //d key		
-				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, -0.1, [0, 0, 1]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 0, 1]);
 			}
 			if (key.keyCode == "65") { //a key				
-				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, 0.1, [0, 0, 1]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 0, 1]);
 			}	
 			
 			
