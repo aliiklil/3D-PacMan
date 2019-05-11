@@ -193,7 +193,7 @@ function main() {
 	var halfSphereColors = [];
 	var halfSphereIndices = [];
 	
-	var latLongCount = 20; // Count of latitudes and longitudes
+	var latLongCount = 30; // Count of latitudes and longitudes
 
 	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the halfSphere
 		for (var j = 0; j <= latLongCount; j++) {
@@ -222,14 +222,16 @@ function main() {
 	}
 	
 	halfSphereVertices.push(0, 0, 0);
+	halfSphereColors.push(0, 0, 0);
 	
-	for (var i = 0; i <= latLongCount+1; i++) {
-		for (var j = 0; j <= latLongCount+1; j++) {
+	for (var i = 0; i <= latLongCount; i++) {
+		for (var j = 0; j <= latLongCount; j++) {
 		halfSphereIndices.push(halfSphereVertices.length);
 		halfSphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
 		halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
 		}
 	}
+
 
 	halfSphereNormals = halfSphereVertices.slice(); // The normals and the vertices are the same for the halfSphere
 
