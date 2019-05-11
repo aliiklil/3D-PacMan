@@ -193,13 +193,13 @@ function main() {
 	var sphereColors = [];
 	var sphereIndices = [];
 	
-	var latLongCount = 30; // Count of latitudes and longitudes
+	var latLongCount = 10; // Count of latitudes and longitudes
 
 	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the sphere
 		for (var j = 0; j <= latLongCount; j++) {
 		
 			var theta = i * Math.PI / latLongCount;
-			var phi = j * 2 * Math.PI / latLongCount;
+			var phi = j * 2 * Math.PI/2 / latLongCount;
 
 			sphereVertices.push(Math.sin(theta) * Math.cos(phi));
 			sphereVertices.push(Math.cos(theta) * Math.cos(phi));
@@ -228,7 +228,7 @@ function main() {
 	var specularColor = [0.1, 0.1, 0.1];
 	
 	var lightPosition = [0, 20, -20];
-	var cameraPosition = [0, 20, 0];
+	var cameraPosition = [0, 5, 0];
 	
 	//Create uniform matrices
 	var globalRotationMatrix = new Float32Array(16);
@@ -264,6 +264,9 @@ function main() {
 	
 	var cameraSelected = false;
 
+	glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
+	glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 1, 0]);		
+	
 	var loop = function () {
 		
 		gl.clearColor(0.9, 0.9, 0.9, 1.0);
@@ -454,8 +457,36 @@ function main() {
 				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0.1, 0, 0]);
 			}
 			if (key.keyCode == "40") { //Arrow down
-			glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-0.1, 0, 0]);
+				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [-0.1, 0, 0]);
 			}
+			if (key.keyCode == "188") { //Comma
+				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, 0.1, 0]);				
+			}
+			if (key.keyCode == "190") { //Point
+				glMatrix.mat4.translate(sphereTranslationMatrix, sphereTranslationMatrix, [0, -0.1, 0]);				
+			}
+			
+			
+			if (key.keyCode == "87") { //w key		
+				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, -0.1, [1, 0, 0]);
+			}
+			if (key.keyCode == "83") { //s key				
+				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, 0.1, [1, 0, 0]);
+			}
+			if (key.keyCode == "81") { //e key		
+				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, -0.1, [0, 1, 0]);
+			}
+			if (key.keyCode == "69") { //q key				
+				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, 0.1, [0, 1, 0]);
+			}
+			if (key.keyCode == "68") { //d key		
+				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, -0.1, [0, 0, 1]);
+			}
+			if (key.keyCode == "65") { //a key				
+				glMatrix.mat4.rotate(sphereRotationMatrix, sphereRotationMatrix, 0.1, [0, 0, 1]);
+			}	
+			
+			
 		}
 
 	}
