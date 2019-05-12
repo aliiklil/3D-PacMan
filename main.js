@@ -284,7 +284,10 @@ function main() {
 	var indexBuffer = gl.createBuffer();
 	
 	var cameraSelected = false;
-		
+	
+	var mouthOpeningCounter = 0;
+	var mouthOpening = true;
+	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(45), [0, 1, 0]);
 	var loop = function () {
 		
 		gl.clearColor(0.9, 0.9, 0.9, 1.0);
@@ -335,9 +338,26 @@ function main() {
 		
 		
 		
+		mouthOpeningCounter++;
 		
+		if(mouthOpeningCounter == 10) {
+			mouthOpeningCounter = 0;
+			if(mouthOpening) {
+					mouthOpening = false;
+			} else {
+				mouthOpening = true;
+			}
+		}
 		
+		console.log(mouthOpening)
 		
+		if (mouthOpening) { //e key		
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], -0.1, [0, 1, 0]);
+		}
+		
+		if (!mouthOpening) { //q key				
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], 0.1, [0, 1, 0]);
+		}
 		
 		
 		
