@@ -28,7 +28,7 @@ function main() {
 	glMatrix.mat4.identity(identityMatrix);
 	
 	
-	var blackCircleVertices = [
+	var playerEyeVertices = [
 		0, 0, 0,
 		1, 0, 0,
 		0.92, 0, 0.38,
@@ -48,7 +48,7 @@ function main() {
 		0.92, 0, -0.38
 	];
 	
-	var blackCircleIndices = [
+	var playerEyeIndices = [
 		0, 1, 2,
 		0, 2, 3,
 		0, 3, 4,
@@ -67,7 +67,7 @@ function main() {
 		0, 16, 1
 	];
 		
-	var blackCircleNormals = [
+	var playerEyeNormals = [
 		0, 1, 0,
 		0, 1, 0,
 		0, 1, 0,
@@ -87,7 +87,7 @@ function main() {
 		0, 1, 0
 	];
 	
-	var blackCircleColors = [
+	var playerEyeColors = [
 		0, 0, 0,
 		0, 0, 0,
 		0, 0, 0,
@@ -107,29 +107,36 @@ function main() {
 		0, 0, 0
 	];
 	
+	var playerEyeRotationMatrices = [];
 	
-	var blackCircleRotationMatrices = [];
-	var blackCircleTranslationMatrices = [];
-	var blackCircleScalingMatrices = [];
+	var playerEyeRotationMatrices = [];
+	var playerEyeTranslationMatrices = [];
+	var playerEyeScalingMatrices = [];
 	
 	for(var i = 0; i < 2; i++) {
-		blackCircleRotationMatrices.push(identityMatrix.slice());
-		blackCircleTranslationMatrices.push(identityMatrix.slice());
-		blackCircleScalingMatrices.push(identityMatrix.slice());
+		playerEyeRotationMatrices.push(identityMatrix.slice());
+		playerEyeTranslationMatrices.push(identityMatrix.slice());
+		playerEyeScalingMatrices.push(identityMatrix.slice());
 	}
-
-	glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [0.2, 1, 1]);
-	glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [1, 1, 0.2]);
-	glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [-1.85, 5.9, -1.9]);
-	glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], -0.78, [1, 0, 0]);
-	glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], 0.78, [0, 0, 1]);
 	
-	glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [0.2, 1, 1]);
-	glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [1, 1, 0.2]);
-	glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [-1.85, 5.9, -1.2]);
-	glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], 0.5, [1, 0, 0]);
-	glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], -0.1, [0, 1, 0]);
-	glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], -2.5, [0, 0, 1]);
+	glMatrix.mat4.translate(playerEyeTranslationMatrices[0], playerEyeTranslationMatrices[0], [-1.85, 5.9, -1.9]);
+	
+	glMatrix.mat4.scale(playerEyeScalingMatrices[0], playerEyeScalingMatrices[0], [0.2, 1, 1]);
+	glMatrix.mat4.scale(playerEyeScalingMatrices[0], playerEyeScalingMatrices[0], [1, 1, 0.2]);
+	
+	glMatrix.mat4.rotate(playerEyeRotationMatrices[0], playerEyeRotationMatrices[0], -0.78, [1, 0, 0]);
+	glMatrix.mat4.rotate(playerEyeRotationMatrices[0], playerEyeRotationMatrices[0], 0.78, [0, 0, 1]);
+	
+	
+	
+	glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [-1.85, 5.9, -1.2]);
+	
+	glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [0.2, 1, 1]);
+	glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [1, 1, 0.2]);
+	
+	glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], 0.5, [1, 0, 0]);
+	glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -0.1, [0, 1, 0]);
+	glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -2.5, [0, 0, 1]);
 	
 	var groundPlaneVertices = [
 		16, 0, 16,
@@ -445,9 +452,9 @@ function main() {
 		for(var i = 0; i < 2; i++) {
 			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, blackCircleRotationMatrices[i]);
-			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, blackCircleTranslationMatrices[i]);
-			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, blackCircleScalingMatrices[i]);
+			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, playerEyeRotationMatrices[i]);
+			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, playerEyeTranslationMatrices[i]);
+			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, playerEyeScalingMatrices[i]);
 			gl.uniform3fv(ambientColorUniformLocation, ambientColor);
 			gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
 			gl.uniform3fv(specularColorUniformLocation, specularColor);
@@ -455,21 +462,21 @@ function main() {
 			gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 			
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleVertices), gl.STATIC_DRAW);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeVertices), gl.STATIC_DRAW);
 			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleNormals), gl.STATIC_DRAW);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
 			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 			
 			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleColors), gl.STATIC_DRAW);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
 			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(blackCircleIndices), gl.STATIC_DRAW);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
 
-			gl.drawElements(gl.TRIANGLES, blackCircleIndices.length, gl.UNSIGNED_SHORT, 0);
+			gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
 		}
 		
 		
@@ -681,46 +688,46 @@ function main() {
 			
 			//Translation
 			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0, 0, 0.1]);
+				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0, 0, 0.1]);
 			}
 			if (key.keyCode == "37") { //Arrow left
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0, 0, -0.1]);
+				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0, 0, -0.1]);
 			}
 			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0, 0.1, 0]);
+				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0, 0.1, 0]);
 			}
 			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0, -0.1, 0]);
+				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0, -0.1, 0]);
 			}
 			if (key.keyCode == "188") { //Comma
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0.1, 0, 0]);
+				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0.1, 0, 0]);
 			}
 			if (key.keyCode == "190") { //Point
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [-0.1, 0, 0]);
+				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [-0.1, 0, 0]);
 			}
 
 			//Scaling
 			if (key.keyCode == "85") { //u key
-				glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [1.1, 1, 1]);
-				glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [1, 1, 1.1]);
+				glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [1.1, 1, 1]);
+				glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [1, 1, 1.1]);
 			}
 			if (key.keyCode == "73") { //i key
-				glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [0.9, 1, 1]);
-				glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [1, 1, 0.9]);
+				glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [0.9, 1, 1]);
+				glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [1, 1, 0.9]);
 			}
 						
 			//Rotation		
 			if (key.keyCode == "87") { //w key		
-				glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], -0.1, [1, 0, 0]);
+				glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -0.1, [1, 0, 0]);
 			}				
 			if (key.keyCode == "83") { //s key				
-				glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], 0.1, [1, 0, 0]);
+				glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], 0.1, [1, 0, 0]);
 			}				
 			if (key.keyCode == "68") { //d key		
-				glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], -0.1, [0, 0, 1]);
+				glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -0.1, [0, 0, 1]);
 			}				
 			if (key.keyCode == "65") { //a key				
-				glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], 0.1, [0, 0, 1]);
+				glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], 0.1, [0, 0, 1]);
 			}						
 			
 		}
