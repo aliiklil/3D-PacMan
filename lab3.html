@@ -12,6 +12,7 @@
 			attribute vec3 vertexColor;
 			
 			uniform mat4 rotationMatrix;
+			uniform mat4 scalingMatrix;
 			uniform mat4 translationMatrix;
 			
 			uniform mat4 projectionMatrix;
@@ -23,7 +24,7 @@
 			
 			void main(){
 	
-				gl_Position = projectionMatrix * viewMatrix * translationMatrix * rotationMatrix * vec4(vertexPosition, 1.0);
+				gl_Position = projectionMatrix * viewMatrix * translationMatrix * rotationMatrix * scalingMatrix * vec4(vertexPosition, 1.0);
 				
 				mat4 transformationMatrix = translationMatrix * rotationMatrix;
 				mat4 combinedRotationMatrix = rotationMatrix;  // Will be used for the normal vectors, where translations are not important

@@ -27,6 +27,100 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
+	
+	var blackCircleVertices = [
+		0, 0, 0,
+		1, 0, 0,
+		0.92, 0, 0.38,
+		0.7, 0, 0.7,
+		0.38, 0, 0.92,
+		0, 0, 1,
+		-0.38, 0, 0.92,
+		-0.7, 0, 0.7,
+		-0.92, 0, 0.38,
+		-1, 0, 0,
+		-0.92, 0, -0.38,
+		-0.7, 0, -0.7,
+		-0.38, 0, -0.92,
+		0, 0, -1,
+		0.38, 0, -0.92,
+		0.7, 0, -0.7,
+		0.92, 0, -0.38
+	];
+	
+	var blackCircleIndices = [
+		0, 1, 2,
+		0, 2, 3,
+		0, 3, 4,
+		0, 4, 5,
+		0, 5, 6,
+		0, 6, 7,
+		0, 7, 8,
+		0, 8, 9,
+		0, 9, 10,
+		0, 10, 11,
+		0, 11, 12,
+		0, 12, 13,
+		0, 13, 14,
+		0, 14, 15,
+		0, 15, 16,
+		0, 16, 0
+	];
+		
+	var blackCircleNormals = [
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0,
+		0, 1, 0
+	];
+	
+	var blackCircleColors = [
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0
+	];
+	
+	
+	var blackCircleRotationMatrices = [];
+	var blackCircleTranslationMatrices = [];
+	var blackCircleScalingMatrices = [];
+	
+	for(var i = 0; i < 2; i++) {
+		blackCircleRotationMatrices.push(identityMatrix.slice());
+		blackCircleTranslationMatrices.push(identityMatrix.slice());
+		blackCircleScalingMatrices.push(identityMatrix.slice());
+	}
+	
+	glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [-2, 3, 0]);
+	
+	
 	var groundPlaneVertices = [
 		16, 0, 16,
 		16, 0, -16,
@@ -296,6 +390,7 @@ function main() {
 		
 		var rotationMatrixUniformLocation = gl.getUniformLocation(program, 'rotationMatrix');
 		var translationMatrixUniformLocation = gl.getUniformLocation(program, 'translationMatrix');
+		var scalingMatrixUniformLocation = gl.getUniformLocation(program, 'scalingMatrix');
 		var viewMatrixUniformLocation = gl.getUniformLocation(program, 'viewMatrix');
 		var projectionMatrixUniformLocation = gl.getUniformLocation(program, 'projectionMatrix');
 		var ambientColorUniformLocation = gl.getUniformLocation(program, 'ambientColor');
@@ -311,6 +406,7 @@ function main() {
 		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, groundPlaneRotationMatrix);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, groundPlaneTranslationMatrix);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
 		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
 		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
 		gl.uniform3fv(specularColorUniformLocation, specularColor);
@@ -337,6 +433,45 @@ function main() {
 		
 		
 		
+		//Draw black circle
+		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, blackCircleRotationMatrices[0]);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, blackCircleTranslationMatrices[0]);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, blackCircleScalingMatrices[0]);
+		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+		gl.uniform3fv(specularColorUniformLocation, specularColor);
+		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(blackCircleIndices), gl.STATIC_DRAW);
+
+		gl.drawElements(gl.TRIANGLES, blackCircleIndices.length, gl.UNSIGNED_SHORT, 0);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		mouthOpeningCounter++;
 		
@@ -351,11 +486,11 @@ function main() {
 		
 		console.log(mouthOpening)
 		
-		if (mouthOpening) { //e key		
+		if (mouthOpening) {
 			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], -0.1, [0, 1, 0]);
 		}
 		
-		if (!mouthOpening) { //q key				
+		if (!mouthOpening) {			
 			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], 0.1, [0, 1, 0]);
 		}
 		
@@ -367,6 +502,7 @@ function main() {
 			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[i]);
 			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[i]);
+			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
 			gl.uniform3fv(ambientColorUniformLocation, ambientColor);
 			gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
 			gl.uniform3fv(specularColorUniformLocation, specularColor);
@@ -402,6 +538,7 @@ function main() {
 					gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, cubeTranslationMatrices[i][j]);
+					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniform3fv(ambientColorUniformLocation, ambientColor);
 					gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
 					gl.uniform3fv(specularColorUniformLocation, specularColor);
@@ -510,26 +647,26 @@ function main() {
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
 			}
 			
-			
+			/*
 			if (key.keyCode == "87") { //w key		
-				//glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [1, 0, 0]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [1, 0, 0]);
 			}
 			if (key.keyCode == "83") { //s key				
-				//glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [1, 0, 0]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [1, 0, 0]);
 			}
 			if (key.keyCode == "81") { //e key		
-				//glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 1, 0]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 1, 0]);
 			}
 			if (key.keyCode == "69") { //q key				
-				//glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 1, 0]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 1, 0]);
 			}
 			if (key.keyCode == "68") { //d key		
-				//glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 0, 1]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 0, 1]);
 			}
 			if (key.keyCode == "65") { //a key				
-				//glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 0, 1]);
+				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 0, 1]);
 			}	
-			
+			*/
 			
 		}
 
