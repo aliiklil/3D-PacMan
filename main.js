@@ -64,7 +64,7 @@ function main() {
 		0, 13, 14,
 		0, 14, 15,
 		0, 15, 16,
-		0, 16, 0
+		0, 16, 1
 	];
 		
 	var blackCircleNormals = [
