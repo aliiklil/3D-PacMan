@@ -106,9 +106,7 @@ function main() {
 		0, 0, 0,
 		0, 0, 0
 	];
-	
-	var playerEyeRotationMatrices = [];
-	
+		
 	var playerEyeRotationMatrices = [];
 	var playerEyeTranslationMatrices = [];
 	var playerEyeScalingMatrices = [];
@@ -137,6 +135,49 @@ function main() {
 	glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], 0.5, [1, 0, 0]);
 	glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -0.1, [0, 1, 0]);
 	glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -2.5, [0, 0, 1]);
+	
+	var leftEyeVertices = [];
+	
+	var rightEyeVertices = [];
+	
+	for(var i=0; i < playerEyeVertices.length; i=i+3) {
+		
+		var vertex = new Float32Array(3);
+		
+		vertex[0] = playerEyeVertices[i];
+		vertex[1] = playerEyeVertices[i+1];
+		vertex[2] = playerEyeVertices[i+2];
+		
+		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeScalingMatrices[0]);
+		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeRotationMatrices[0]);
+		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeTranslationMatrices[0]);
+		
+		leftEyeVertices.push(vertex[0]);
+		leftEyeVertices.push(vertex[1]);
+		leftEyeVertices.push(vertex[2]);
+	}
+	
+	for(var i=0; i < playerEyeVertices.length; i=i+3) {
+		
+		var vertex = new Float32Array(3);
+		
+		vertex[0] = playerEyeVertices[i];
+		vertex[1] = playerEyeVertices[i+1];
+		vertex[2] = playerEyeVertices[i+2];
+		
+		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeScalingMatrices[1]);
+		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeRotationMatrices[1]);
+		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeTranslationMatrices[1]);
+		
+		rightEyeVertices.push(vertex[0]);
+		rightEyeVertices.push(vertex[1]);
+		rightEyeVertices.push(vertex[2]);
+	}
+	
+	console.log(playerEyeVertices)
+	console.log(leftEyeVertices)
+	console.log(rightEyeVertices)
+	
 	
 	var groundPlaneVertices = [
 		16, 0, 16,
@@ -295,7 +336,6 @@ function main() {
 		}
 	}
 	
-	console.log(cubeTranslationMatrices)
 
 	
 	
