@@ -121,15 +121,16 @@ function main() {
 	
 	glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [0.2, 1, 1]);
 	glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [1, 1, 0.2]);
-	glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [-1.85, 5.8, -1.9]);
+	glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [-1.85, 5.9, -1.9]);
 	glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], glMatrix.glMatrix.toRadian(-45), [1, 0, 0]);
 	glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], glMatrix.glMatrix.toRadian(45), [0, 0, 1]);
 	
 	glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [0.2, 1, 1]);
 	glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [1, 1, 0.2]);
-	glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[0], [-1.85, 5.8, -1.9]);
-	glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], glMatrix.glMatrix.toRadian(-45), [1, 0, 0]);
-	glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], glMatrix.glMatrix.toRadian(45), [0, 0, 1]);
+	glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [-1.85, 5.9, -1.2]);
+	glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], 0.5, [1, 0, 0]);
+	glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], -0.1, [0, 1, 0]);
+	glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], -2.5, [0, 0, 1]);
 	
 	var groundPlaneVertices = [
 		16, 0, 16,
@@ -441,39 +442,36 @@ function main() {
 		gl.drawElements(gl.TRIANGLES, groundPlaneIndices.length, gl.UNSIGNED_SHORT, 0);
 		
 		
-		
-		
-		//Draw black circle
-		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, blackCircleRotationMatrices[0]);
-		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, blackCircleTranslationMatrices[0]);
-		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, blackCircleScalingMatrices[0]);
-		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-		gl.uniform3fv(specularColorUniformLocation, specularColor);
-		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleVertices), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		//Draw eyes
+		for(var i = 0; i < 2; i++) {
+			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, blackCircleRotationMatrices[i]);
+			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, blackCircleTranslationMatrices[i]);
+			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, blackCircleScalingMatrices[i]);
+			gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+			gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+			gl.uniform3fv(specularColorUniformLocation, specularColor);
+			gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+			gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleVertices), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleNormals), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleColors), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleNormals), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(blackCircleColors), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(blackCircleIndices), gl.STATIC_DRAW);
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(blackCircleIndices), gl.STATIC_DRAW);
 
-		gl.drawElements(gl.TRIANGLES, blackCircleIndices.length, gl.UNSIGNED_SHORT, 0);
-		
-		
-		
+			gl.drawElements(gl.TRIANGLES, blackCircleIndices.length, gl.UNSIGNED_SHORT, 0);
+		}
 		
 		
 		
@@ -505,9 +503,8 @@ function main() {
 		}
 		
 		
-		
+		//Draw halfSpheres
 		for(var i = 0; i < 2; i++) {
-			//Draw halfSphere			
 			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[i]);
@@ -685,46 +682,46 @@ function main() {
 			
 			//Translation
 			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [0, 0, 0.1]);
+				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0, 0, 0.1]);
 			}
 			if (key.keyCode == "37") { //Arrow left
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [0, 0, -0.1]);
+				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0, 0, -0.1]);
 			}
 			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [0, 0.1, 0]);
+				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0, 0.1, 0]);
 			}
 			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [0, -0.1, 0]);
+				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0, -0.1, 0]);
 			}
 			if (key.keyCode == "188") { //Comma
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [0.1, 0, 0]);
+				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [0.1, 0, 0]);
 			}
 			if (key.keyCode == "190") { //Point
-				glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [-0.1, 0, 0]);
+				glMatrix.mat4.translate(blackCircleTranslationMatrices[1], blackCircleTranslationMatrices[1], [-0.1, 0, 0]);
 			}
 
 			//Scaling
 			if (key.keyCode == "85") { //u key
-				glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [1.1, 1, 1]);
-				glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [1, 1, 1.1]);
+				glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [1.1, 1, 1]);
+				glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [1, 1, 1.1]);
 			}
 			if (key.keyCode == "73") { //i key
-				glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [0.9, 1, 1]);
-				glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [1, 1, 0.9]);
+				glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [0.9, 1, 1]);
+				glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [1, 1, 0.9]);
 			}
 						
 			//Rotation		
 			if (key.keyCode == "87") { //w key		
-				glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], -0.1, [1, 0, 0]);
+				glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], -0.1, [1, 0, 0]);
 			}				
 			if (key.keyCode == "83") { //s key				
-				glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], 0.1, [1, 0, 0]);
+				glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], 0.1, [1, 0, 0]);
 			}				
 			if (key.keyCode == "68") { //d key		
-				glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], -0.1, [0, 0, 1]);
+				glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], -0.1, [0, 0, 1]);
 			}				
 			if (key.keyCode == "65") { //a key				
-				glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], 0.1, [0, 0, 1]);
+				glMatrix.mat4.rotate(blackCircleRotationMatrices[1], blackCircleRotationMatrices[1], 0.1, [0, 0, 1]);
 			}						
 			
 		}
