@@ -117,13 +117,12 @@ function main() {
 		blackCircleTranslationMatrices.push(identityMatrix.slice());
 		blackCircleScalingMatrices.push(identityMatrix.slice());
 	}
-	
-	
+
 	glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [0.2, 1, 1]);
 	glMatrix.mat4.scale(blackCircleScalingMatrices[0], blackCircleScalingMatrices[0], [1, 1, 0.2]);
 	glMatrix.mat4.translate(blackCircleTranslationMatrices[0], blackCircleTranslationMatrices[0], [-1.85, 5.9, -1.9]);
-	glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], glMatrix.glMatrix.toRadian(-45), [1, 0, 0]);
-	glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], glMatrix.glMatrix.toRadian(45), [0, 0, 1]);
+	glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], -0.78, [1, 0, 0]);
+	glMatrix.mat4.rotate(blackCircleRotationMatrices[0], blackCircleRotationMatrices[0], 0.78, [0, 0, 1]);
 	
 	glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [0.2, 1, 1]);
 	glMatrix.mat4.scale(blackCircleScalingMatrices[1], blackCircleScalingMatrices[1], [1, 1, 0.2]);
