@@ -462,10 +462,10 @@ function main() {
 		if(cameraSelected) {
 			//Translation of camera
 			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
 			}
 			if (key.keyCode == "37") { //Arrow left
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
 			}
 			if (key.keyCode == "38") { //Arrow up
 				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, -0.1, 0]);
@@ -474,10 +474,10 @@ function main() {
 				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0.1, 0]);
 			}
 			if (key.keyCode == "188") { //Comma
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
 			}
 			if (key.keyCode == "190") { //Point
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
 			}
 		}
 	
@@ -486,22 +486,22 @@ function main() {
 		//Translation
 		if(!cameraSelected) {
 			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrix[0], [0, 0, 0.1]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
 			}
 			if (key.keyCode == "37") { //Arrow left
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
 			}
 			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0.1, 0]);
 			}
 			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -0.1, 0]);
 			}
 			if (key.keyCode == "188") { //Comma
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0.1, 0]);				
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
 			}
 			if (key.keyCode == "190") { //Point
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -0.1, 0]);				
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
 			}
 			
 			
