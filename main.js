@@ -27,6 +27,12 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
+	var goingUp = true;
+	var goingDown = false;
+	var goingLeft = false;
+	var goingRight = false;
+	
+	
 	var leftEyeVertices = [
 		-0.3500000238418579,
 		0.3999999761581421,
@@ -593,6 +599,40 @@ function main() {
 		}
 		
 		
+		if (goingUp) { //Arrow down
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
+		}
+
+		if (goingDown) { //Arrow down
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
+		}
+
+		if (goingLeft) { //Arrow left
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.1]);
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
+		}
+
+		if (goingRight) { //Arrow right
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		//Draw halfSpheres
 		for(var i = 0; i < 2; i++) {
 			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
@@ -720,16 +760,51 @@ function main() {
 		//Translation
 		if(!cameraSelected) {
 		
-			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
+			if (key.keyCode == "38") { //Arrow up
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
+				
+				goingUp = true;
+				goingDown = false;
+				goingLeft = false;
+				goingRight = false;
 			}
+			
+			if (key.keyCode == "40") { //Arrow down
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
+				
+				goingUp = false;
+				goingDown = true;
+				goingLeft = false;
+				goingRight = false;
+			}
+		
 			if (key.keyCode == "37") { //Arrow left
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.1]);
 				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
+						
+				goingUp = false;
+				goingDown = false;
+				goingLeft = true;
+				goingRight = false;
 			}
+		
+			if (key.keyCode == "39") { //Arrow right
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
+				
+				goingUp = false;
+				goingDown = false;
+				goingLeft = false;
+				goingRight = true;
+				
+			}
+
 			if (key.keyCode == "38") { //Arrow up
 				//glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0.1, 0]);
 				//glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0.1, 0]);
@@ -738,16 +813,7 @@ function main() {
 				//glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -0.1, 0]);
 				//glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -0.1, 0]);
 			}
-			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
-			}
-			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
-			}
+
 			
 			/*
 			if (key.keyCode == "87") { //w key		
