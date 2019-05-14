@@ -362,7 +362,7 @@ function main() {
 	var halfSphereColors = [];
 	var halfSphereIndices = [];
 	
-	var latLongCount = 30; // Count of latitudes and longitudes
+	var latLongCount = 5; // Count of latitudes and longitudes
 
 	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the halfSphere
 		for (var j = 0; j <= latLongCount; j++) {
@@ -408,7 +408,7 @@ function main() {
 	var specularColor = [0.1, 0.1, 0.1];
 	
 	var lightPosition = [0, 20, -20];
-	var cameraPosition = [-3, 7, -1.5];
+	var cameraPosition = [-5, 15, -1.5];
 	
 	//Create uniform matrices
 	var globalRotationMatrix = new Float32Array(16);
@@ -422,11 +422,11 @@ function main() {
 		halfSphereTranslationMatrices.push(identityMatrix.slice());
 	}
 	
-	glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-1.5, 5, -1.5]);
+	glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-1.5, 1, -1.5]);
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
 	//glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(-90), [0, 1, 0]);
 	
-	glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-1.5, 5, -1.5]);
+	glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-1.5, 1, -1.5]);
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
 	//glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [0, 1, 0]);
 	
@@ -723,26 +723,30 @@ function main() {
 			if (key.keyCode == "39") { //Arrow right
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
 			}
 			if (key.keyCode == "37") { //Arrow left
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.1]);
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
 			}
 			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0.1, 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0.1, 0]);
+				//glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0.1, 0]);
+				//glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0.1, 0]);
 			}
 			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -0.1, 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -0.1, 0]);
+				//glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -0.1, 0]);
+				//glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -0.1, 0]);
 			}
-			if (key.keyCode == "188") { //Comma
+			if (key.keyCode == "38") { //Arrow up
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
 			}
-			if (key.keyCode == "190") { //Point
+			if (key.keyCode == "40") { //Arrow down
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
 			}
 			
 			/*
