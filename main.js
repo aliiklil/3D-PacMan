@@ -27,26 +27,157 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
-	
-	var playerEyeVertices = [
-		0, 0, 0,
-		1, 0, 0,
-		0.92, 0, 0.38,
-		0.7, 0, 0.7,
-		0.38, 0, 0.92,
-		0, 0, 1,
-		-0.38, 0, 0.92,
-		-0.7, 0, 0.7,
-		-0.92, 0, 0.38,
-		-1, 0, 0,
-		-0.92, 0, -0.38,
-		-0.7, 0, -0.7,
-		-0.38, 0, -0.92,
-		0, 0, -1,
-		0.38, 0, -0.92,
-		0.7, 0, -0.7,
-		0.92, 0, -0.38
+	var leftEyeVertices = [
+		-0.3500000238418579,
+		0.9000000953674316,
+		-0.3999999761581421,
+		-0.20781731605529785,
+		0.9999942779541016,
+		-0.4989203214645386,
+		-0.21919190883636475,
+		1.0454440116882324,
+		-0.4369772672653198,
+		-0.2504720687866211,
+		1.0684552192687988,
+		-0.3697164058685303,
+		-0.2959705591201782,
+		1.06740140914917,
+		-0.3067816495895386,
+		-0.3500000238418579,
+		1.0406560897827148,
+		-0.25781726837158203,
+		-0.4040294885635376,
+		0.9914054870605469,
+		-0.23160219192504883,
+		-0.4495279788970947,
+		0.9284634590148926,
+		-0.23122775554656982,
+		-0.4808081388473511,
+		0.8614544868469238,
+		-0.254963755607605,
+		-0.49218273162841797,
+		0.8000059127807617,
+		-0.3010796308517456,
+		-0.4808081388473511,
+		0.7545561790466309,
+		-0.36302268505096436,
+		-0.4495279788970947,
+		0.7315449714660645,
+		-0.4302835464477539,
+		-0.4040294885635376,
+		0.7325987815856934,
+		-0.4932183027267456,
+		-0.3500000238418579,
+		0.7593441009521484,
+		-0.5421826839447021,
+		-0.2959705591201782,
+		0.8085947036743164,
+		-0.5683977603912354,
+		-0.2504720687866211,
+		0.8715367317199707,
+		-0.5687720775604248,
+		-0.21919190883636475,
+		0.9385457038879395,
+		-0.5450360774993896
 	];
+
+	var rightEyeVertices = [
+		-0.3500000238418579,
+		0.9000000953674316,
+		0.2999999523162842,
+		-0.5094282627105713,
+		0.8026275634765625,
+		0.2285773754119873,
+		-0.5042612552642822,
+		0.774162769317627,
+		0.3006542921066284,
+		-0.4755765199661255,
+		0.7650547027587891,
+		0.3722519874572754,
+		-0.42895209789276123,
+		0.7752246856689453,
+		0.4335278272628784,
+		-0.3699667453765869,
+		0.8045940399169922,
+		0.4746396541595459,
+		-0.30778658390045166,
+		0.8492283821105957,
+		0.4878089427947998,
+		-0.252376914024353,
+		0.9013767242431641,
+		0.4722435474395752,
+		-0.21091341972351074,
+		0.9533286094665527,
+		0.4320716857910156,
+		-0.19057178497314453,
+		0.9973726272583008,
+		0.37142252922058105,
+		-0.19573867321014404,
+		1.0258374214172363,
+		0.29934561252593994,
+		-0.22442352771759033,
+		1.0349454879760742,
+		0.22774791717529297,
+		-0.2710479497909546,
+		1.024775505065918,
+		0.16647207736968994,
+		-0.3300333023071289,
+		0.9954061508178711,
+		0.12536025047302246,
+		-0.39221346378326416,
+		0.9507718086242676,
+		0.11219096183776855,
+		-0.4476231336593628,
+		0.8986234664916992,
+		0.12775635719299316,
+		-0.4890866279602051,
+		0.8466715812683105,
+		0.16792821884155273
+	];
+	
+	
+	for (var i = 0; i < leftEyeVertices.length; i=i+3) {
+		
+		var vertex = new Float32Array(3);
+		
+		vertex[0] = leftEyeVertices[i];
+		vertex[1] = leftEyeVertices[i+1];
+		vertex[2] = leftEyeVertices[i+2];
+		
+		var rotationMatrix = new Float32Array(16);
+		rotationMatrix = identityMatrix.slice();
+		
+		glMatrix.mat4.rotate(rotationMatrix, rotationMatrix, glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
+		
+		glMatrix.vec3.transformMat4(vertex, vertex, rotationMatrix);
+		
+		leftEyeVertices[i] = vertex[0];
+		leftEyeVertices[i+1] = vertex[1];
+		leftEyeVertices[i+2] = vertex[2];
+		
+	}
+	
+	
+	for (var i = 0; i < rightEyeVertices.length; i=i+3) {
+		
+		var vertex = new Float32Array(3);
+		
+		vertex[0] = rightEyeVertices[i];
+		vertex[1] = rightEyeVertices[i+1];
+		vertex[2] = rightEyeVertices[i+2];
+		
+		var rotationMatrix = new Float32Array(16);
+		rotationMatrix = identityMatrix.slice();
+		
+		glMatrix.mat4.rotate(rotationMatrix, rotationMatrix, glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
+		
+		glMatrix.vec3.transformMat4(vertex, vertex, rotationMatrix);
+		
+		rightEyeVertices[i] = vertex[0];
+		rightEyeVertices[i+1] = vertex[1];
+		rightEyeVertices[i+2] = vertex[2];
+		
+	}
 	
 	var playerEyeIndices = [
 		0, 1, 2,
@@ -107,76 +238,7 @@ function main() {
 		0, 0, 0
 	];
 		
-	var playerEyeRotationMatrices = [];
-	var playerEyeTranslationMatrices = [];
-	var playerEyeScalingMatrices = [];
-	
-	for(var i = 0; i < 2; i++) {
-		playerEyeRotationMatrices.push(identityMatrix.slice());
-		playerEyeTranslationMatrices.push(identityMatrix.slice());
-		playerEyeScalingMatrices.push(identityMatrix.slice());
-	}
-	
-	glMatrix.mat4.translate(playerEyeTranslationMatrices[0], playerEyeTranslationMatrices[0], [-1.85, 5.9, -1.9]);
-	
-	glMatrix.mat4.scale(playerEyeScalingMatrices[0], playerEyeScalingMatrices[0], [0.2, 1, 1]);
-	glMatrix.mat4.scale(playerEyeScalingMatrices[0], playerEyeScalingMatrices[0], [1, 1, 0.2]);
-	
-	glMatrix.mat4.rotate(playerEyeRotationMatrices[0], playerEyeRotationMatrices[0], -0.78, [1, 0, 0]);
-	glMatrix.mat4.rotate(playerEyeRotationMatrices[0], playerEyeRotationMatrices[0], 0.78, [0, 0, 1]);
-	
-	
-	
-	glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [-1.85, 5.9, -1.2]);
-	
-	glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [0.2, 1, 1]);
-	glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [1, 1, 0.2]);
-	
-	glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], 0.5, [1, 0, 0]);
-	glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -0.1, [0, 1, 0]);
-	glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -2.5, [0, 0, 1]);
-	
-	var leftEyeVertices = [];
-	
-	var rightEyeVertices = [];
-	
-	for(var i=0; i < playerEyeVertices.length; i=i+3) {
-		
-		var vertex = new Float32Array(3);
-		
-		vertex[0] = playerEyeVertices[i];
-		vertex[1] = playerEyeVertices[i+1];
-		vertex[2] = playerEyeVertices[i+2];
-		
-		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeScalingMatrices[0]);
-		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeRotationMatrices[0]);
-		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeTranslationMatrices[0]);
-		
-		leftEyeVertices.push(vertex[0]);
-		leftEyeVertices.push(vertex[1]);
-		leftEyeVertices.push(vertex[2]);
-	}
-	
-	for(var i=0; i < playerEyeVertices.length; i=i+3) {
-		
-		var vertex = new Float32Array(3);
-		
-		vertex[0] = playerEyeVertices[i];
-		vertex[1] = playerEyeVertices[i+1];
-		vertex[2] = playerEyeVertices[i+2];
-		
-		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeScalingMatrices[1]);
-		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeRotationMatrices[1]);
-		glMatrix.vec3.transformMat4(vertex, vertex, playerEyeTranslationMatrices[1]);
-		
-		rightEyeVertices.push(vertex[0]);
-		rightEyeVertices.push(vertex[1]);
-		rightEyeVertices.push(vertex[2]);
-	}
-	
-	console.log(playerEyeVertices)
-	console.log(leftEyeVertices)
-	console.log(rightEyeVertices)
+
 	
 	
 	var groundPlaneVertices = [
@@ -382,8 +444,7 @@ function main() {
 		halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
 		}
 	}
-
-
+	
 	halfSphereNormals = halfSphereVertices.slice(); // The normals and the vertices are the same for the halfSphere
 
 	var ambientColor = [0.5, 0.5, 0.5];
@@ -488,38 +549,65 @@ function main() {
 		gl.drawElements(gl.TRIANGLES, groundPlaneIndices.length, gl.UNSIGNED_SHORT, 0);
 		
 		
-		//Draw eyes
-		for(var i = 0; i < 2; i++) {
-			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, playerEyeRotationMatrices[i]);
-			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, playerEyeTranslationMatrices[i]);
-			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, playerEyeScalingMatrices[i]);
-			gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-			gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-			gl.uniform3fv(specularColorUniformLocation, specularColor);
-			gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-			gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeVertices), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		//Draw left eye
+		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+		gl.uniform3fv(specularColorUniformLocation, specularColor);
+		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(leftEyeVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 
-			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
 
-			gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
-		}
+		gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
 		
 		
+		
+		//Draw right eye
+		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+		gl.uniform3fv(specularColorUniformLocation, specularColor);
+		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rightEyeVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
+
+		gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
 		
 		
 		
