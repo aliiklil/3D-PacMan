@@ -720,7 +720,6 @@ function main() {
 		//Translation
 		if(!cameraSelected) {
 		
-		/*
 			if (key.keyCode == "39") { //Arrow right
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
@@ -746,7 +745,7 @@ function main() {
 				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
 			}
 			
-			
+			/*
 			if (key.keyCode == "87") { //w key		
 				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [1, 0, 0]);
 			}
@@ -765,54 +764,8 @@ function main() {
 			if (key.keyCode == "65") { //a key				
 				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 0, 1]);
 			}	
-
 			*/
 			
-			
-			
-			//Translation
-			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0, 0, 0.1]);
-			}
-			if (key.keyCode == "37") { //Arrow left
-				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0, 0, -0.1]);
-			}
-			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0, 0.1, 0]);
-			}
-			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0, -0.1, 0]);
-			}
-			if (key.keyCode == "188") { //Comma
-				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [0.1, 0, 0]);
-			}
-			if (key.keyCode == "190") { //Point
-				glMatrix.mat4.translate(playerEyeTranslationMatrices[1], playerEyeTranslationMatrices[1], [-0.1, 0, 0]);
-			}
-
-			//Scaling
-			if (key.keyCode == "85") { //u key
-				glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [1.1, 1, 1]);
-				glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [1, 1, 1.1]);
-			}
-			if (key.keyCode == "73") { //i key
-				glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [0.9, 1, 1]);
-				glMatrix.mat4.scale(playerEyeScalingMatrices[1], playerEyeScalingMatrices[1], [1, 1, 0.9]);
-			}
-						
-			//Rotation		
-			if (key.keyCode == "87") { //w key		
-				glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -0.1, [1, 0, 0]);
-			}				
-			if (key.keyCode == "83") { //s key				
-				glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], 0.1, [1, 0, 0]);
-			}				
-			if (key.keyCode == "68") { //d key		
-				glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], -0.1, [0, 0, 1]);
-			}				
-			if (key.keyCode == "65") { //a key				
-				glMatrix.mat4.rotate(playerEyeRotationMatrices[1], playerEyeRotationMatrices[1], 0.1, [0, 0, 1]);
-			}						
 			
 		}
 
