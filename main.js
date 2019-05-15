@@ -27,8 +27,8 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
-	var goingUp = true;
-	var goingDown = false;
+	var goingUp = false;
+	var goingDown = true;
 	var goingLeft = false;
 	var goingRight = false;
 	
@@ -430,17 +430,16 @@ function main() {
 	
 	glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-1.5, 1, -1.5]);
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
-	//glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(-90), [0, 1, 0]);
-	
+
 	glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-1.5, 1, -1.5]);
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
-	//glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [0, 1, 0]);
 	
 	var viewMatrix = new Float32Array(16);
 	var projectionMatrix = new Float32Array(16);
 
-	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0.1], [0, 1, 0]);
+	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [-1, 0, -1], [0, 1, 0]);
 	glMatrix.mat4.ortho(projectionMatrix, -15, 15, -15, 15, 0.1, 100);
+	//glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
 
     var positionAttribLocation = gl.getAttribLocation(program, 'vertexPosition');
 	gl.enableVertexAttribArray(positionAttribLocation);
@@ -461,12 +460,16 @@ function main() {
 	var mouthOpeningCounter = 0;
 	var mouthOpening = true;
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(45), [0, 1, 0]);
+
+	var wholePlayerRotationMatrix = identityMatrix.slice();
+
 	var loop = function () {
 		
 		gl.clearColor(0.9, 0.9, 0.9, 1.0);
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 		gl.useProgram(program);
 		
+		var wholePlayerRotationMatrixUniformLocation = gl.getUniformLocation(program, 'wholePlayerRotationMatrix');
 		var rotationMatrixUniformLocation = gl.getUniformLocation(program, 'rotationMatrix');
 		var translationMatrixUniformLocation = gl.getUniformLocation(program, 'translationMatrix');
 		var scalingMatrixUniformLocation = gl.getUniformLocation(program, 'scalingMatrix');
@@ -483,6 +486,7 @@ function main() {
 		//Draw ground plane
 		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, groundPlaneRotationMatrix);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, groundPlaneTranslationMatrix);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
@@ -513,6 +517,7 @@ function main() {
 		//Draw left eye
 		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
@@ -544,6 +549,7 @@ function main() {
 		//Draw right eye
 		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
@@ -591,12 +597,10 @@ function main() {
 		
 		if (mouthOpening) {
 			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], -0.1, [0, 1, 0]);
-		}
-		
-		if (!mouthOpening) {			
+		} else {		
 			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], 0.1, [0, 1, 0]);
 		}
-		
+
 		
 		if (goingUp) { //Arrow down
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
@@ -623,19 +627,11 @@ function main() {
 		}
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		//Draw halfSpheres
 		for(var i = 0; i < 2; i++) {
 			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[i]);
 			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[i]);
 			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
@@ -672,6 +668,7 @@ function main() {
 					
 					gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 					gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+					gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, cubeTranslationMatrices[i][j]);
 					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
@@ -760,47 +757,47 @@ function main() {
 		if(!cameraSelected) {
 		
 			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
-				
+
 				goingUp = true;
 				goingDown = false;
 				goingLeft = false;
 				goingRight = false;
+				
+				wholePlayerRotationMatrix = identityMatrix.slice();
+				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(180), [0, 1, 0]);
 			}
 			
 			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
-				
+
 				goingUp = false;
 				goingDown = true;
 				goingLeft = false;
 				goingRight = false;
+				
+				wholePlayerRotationMatrix = identityMatrix.slice();
+				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(0), [0, 1, 0]);
 			}
 		
 			if (key.keyCode == "37") { //Arrow left
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.1]);
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
-						
+	
 				goingUp = false;
 				goingDown = false;
 				goingLeft = true;
 				goingRight = false;
+				
+				wholePlayerRotationMatrix = identityMatrix.slice();
+				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(270), [0, 1, 0]);
 			}
 		
 			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
 				
 				goingUp = false;
 				goingDown = false;
 				goingLeft = false;
 				goingRight = true;
+				
+				wholePlayerRotationMatrix = identityMatrix.slice();
+				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(90), [0, 1, 0]);
 				
 			}
 
