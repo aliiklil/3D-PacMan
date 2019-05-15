@@ -376,9 +376,9 @@ function main() {
 			var theta = i * Math.PI / latLongCount;
 			var phi = j * 2 * Math.PI/2 / latLongCount;
 
-			halfSphereVertices.push(Math.sin(theta) * Math.cos(phi));
-			halfSphereVertices.push(Math.cos(theta) * Math.cos(phi));
-			halfSphereVertices.push(Math.sin(phi));
+			halfSphereVertices.push(Math.sin(theta) * Math.cos(phi)*0.75);
+			halfSphereVertices.push(Math.cos(theta) * Math.cos(phi)*0.75);
+			halfSphereVertices.push(Math.sin(phi)*0.75);
 			
 			halfSphereColors.push(1, 1, 0);
 			
