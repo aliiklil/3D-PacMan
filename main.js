@@ -368,7 +368,7 @@ function main() {
 	var halfSphereColors = [];
 	var halfSphereIndices = [];
 	
-	var latLongCount = 5; // Count of latitudes and longitudes
+	var latLongCount = 10; // Count of latitudes and longitudes
 
 	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the halfSphere
 		for (var j = 0; j <= latLongCount; j++) {
@@ -414,7 +414,7 @@ function main() {
 	var specularColor = [0.1, 0.1, 0.1];
 	
 	var lightPosition = [0, 20, -20];
-	var cameraPosition = [-5, 15, -1.5];
+	var cameraPosition = [-5, 15, 1.5];
 	
 	//Create uniform matrices
 	var globalRotationMatrix = new Float32Array(16);
@@ -438,10 +438,9 @@ function main() {
 	
 	var viewMatrix = new Float32Array(16);
 	var projectionMatrix = new Float32Array(16);
-	
-	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 5, -1], [0, 1, 0]);
-	glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
-	
+
+	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0.1], [0, 1, 0]);
+	glMatrix.mat4.ortho(projectionMatrix, -15, 15, -15, 15, 0.1, 100);
 
     var positionAttribLocation = gl.getAttribLocation(program, 'vertexPosition');
 	gl.enableVertexAttribArray(positionAttribLocation);
