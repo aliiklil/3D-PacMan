@@ -370,15 +370,17 @@ function main() {
 	
 	var latLongCount = 10; // Count of latitudes and longitudes
 
+	var size = 0.9;
+	
 	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the halfSphere
 		for (var j = 0; j <= latLongCount; j++) {
 		
 			var theta = i * Math.PI / latLongCount;
 			var phi = j * 2 * Math.PI/2 / latLongCount;
 
-			halfSphereVertices.push(Math.sin(theta) * Math.cos(phi)*0.75);
-			halfSphereVertices.push(Math.cos(theta) * Math.cos(phi)*0.75);
-			halfSphereVertices.push(Math.sin(phi)*0.75);
+			halfSphereVertices.push(Math.sin(theta) * Math.cos(phi)*size);
+			halfSphereVertices.push(Math.cos(theta) * Math.cos(phi)*size);
+			halfSphereVertices.push(Math.sin(phi)*size);
 			
 			halfSphereColors.push(1, 1, 0);
 			
