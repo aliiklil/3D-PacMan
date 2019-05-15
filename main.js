@@ -487,8 +487,10 @@ function main() {
 		console.log("y= " + playerY)
 		
 		
+		
+		
 		if(lastPlayerX != playerX || lastPlayerY != playerY) {	
-			if(pressedUp) {
+			if(pressedUp && labyrinth[playerY-1][playerX] == 0) {
 				up = true;
 				down = false;	
 				left = false;
@@ -497,7 +499,7 @@ function main() {
 				wholePlayerRotationMatrix = identityMatrix.slice();
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(180), [0, 1, 0]);
 			}
-			if(pressedDown) {
+			if(pressedDown && labyrinth[playerY+1][playerX] == 0) {
 				up = false;
 				down = true;	
 				left = false;
@@ -507,7 +509,7 @@ function main() {
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(0), [0, 1, 0]);
 				
 			}
-			if(pressedLeft) {
+			if(pressedLeft && labyrinth[playerY][playerX-1] == 0) {
 				up = false;
 				down = false;	
 				left = true;
@@ -517,7 +519,7 @@ function main() {
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(270), [0, 1, 0]);
 				
 			}
-			if(pressedRight) {
+			if(pressedRight && labyrinth[playerY][playerX+1] == 0) {
 				up = false;
 				down = false;	
 				left = false;
@@ -670,25 +672,25 @@ function main() {
 		}
 
 		
-		if (up) { //Arrow down
+		if (up) {
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
 		}
 
-		if (down) { //Arrow down
+		if (down) {
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
 		}
 
-		if (left) { //Arrow left
+		if (left) {
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.1]);
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
 		}
 
-		if (right) { //Arrow right
+		if (right) {
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
