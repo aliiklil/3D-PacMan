@@ -355,7 +355,7 @@ function main() {
 	for(var i = 0; i < labyrinth.length; i++) {
 		for(var j = 0; j < labyrinth[0].length; j++) {
 			if(labyrinth[i][j] == 1) {
-				glMatrix.mat4.translate(cubeTranslationMatrices[i][j], cubeTranslationMatrices[i][j], [2*(labyrinth.length-1-i)-15.5, 1, 2*j-15.5]);
+				glMatrix.mat4.translate(cubeTranslationMatrices[i][j], cubeTranslationMatrices[i][j], [2*(labyrinth.length-1-i)-14, 1, 2*j-14]);
 			}
 		}
 	}
@@ -430,10 +430,7 @@ function main() {
 		halfSphereTranslationMatrices.push(identityMatrix.slice());
 	}
 	
-	glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-1.5, 1, -1.5]);
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
-
-	glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-1.5, 1, -1.5]);
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
 	
 	var viewMatrix = new Float32Array(16);
@@ -465,7 +462,74 @@ function main() {
 
 	var wholePlayerRotationMatrix = identityMatrix.slice();
 
+	var lastPlayerX;
+	var lastPlayerY;
+	
+	var playerX;
+	var playerY;
+	
+	var movementPossible = false;
+	
+	var up = false;
+	var down = false;
+	var left = false;
+	var right = false;
+	
 	var loop = function () {
+	
+		playerX = parseInt((halfSphereTranslationMatrices[0][14] + 14)/2);
+		playerY = parseInt(-(halfSphereTranslationMatrices[0][12] - 16)/2);
+		
+		console.log("x= " + playerX)
+		console.log("y= " + playerY)
+		
+		
+		if(lastPlayerX != playerX || lastPlayerY != playerY) {	
+			if(goingUp) {
+				up = true;
+				down = false;	
+				left = false;
+				right = false;
+				
+				wholePlayerRotationMatrix = identityMatrix.slice();
+				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(180), [0, 1, 0]);
+			}
+			if(goingDown) {
+				up = false;
+				down = true;	
+				left = false;
+				right = false;
+				
+				wholePlayerRotationMatrix = identityMatrix.slice();
+				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(0), [0, 1, 0]);
+				
+			}
+			if(goingLeft) {
+				up = false;
+				down = false;	
+				left = true;
+				right = false;
+				
+				wholePlayerRotationMatrix = identityMatrix.slice();
+				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(270), [0, 1, 0]);
+				
+			}
+			if(goingRight) {
+				up = false;
+				down = false;	
+				left = false;
+				right = true;
+				
+				wholePlayerRotationMatrix = identityMatrix.slice();
+				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(90), [0, 1, 0]);
+			}
+		}
+	
+		lastPlayerX = playerX;
+		lastPlayerY = playerY;
+		
+		 
+		
 		
 		gl.clearColor(0.9, 0.9, 0.9, 1.0);
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -589,13 +653,12 @@ function main() {
 		if(mouthOpeningCounter == 10) {
 			mouthOpeningCounter = 0;
 			if(mouthOpening) {
-					mouthOpening = false;
+				mouthOpening = false;
 			} else {
 				mouthOpening = true;
 			}
 		}
 		
-		console.log(mouthOpening)
 		
 		if (mouthOpening) {
 			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], -0.1, [0, 1, 0]);
@@ -604,25 +667,25 @@ function main() {
 		}
 
 		
-		if (goingUp) { //Arrow down
+		if (up) { //Arrow down
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
 		}
 
-		if (goingDown) { //Arrow down
+		if (down) { //Arrow down
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
 		}
 
-		if (goingLeft) { //Arrow left
+		if (left) { //Arrow left
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.1]);
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
 		}
 
-		if (goingRight) { //Arrow right
+		if (right) { //Arrow right
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
@@ -700,12 +763,7 @@ function main() {
 				}
 			}
 		}
-
 		
-		
-		
-		
-	
 		requestAnimationFrame(loop);
 	};
 	requestAnimationFrame(loop);
@@ -765,8 +823,13 @@ function main() {
 				goingLeft = false;
 				goingRight = false;
 				
-				wholePlayerRotationMatrix = identityMatrix.slice();
-				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(180), [0, 1, 0]);
+				/*
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
+				*/
+				
+
 			}
 			
 			if (key.keyCode == "40") { //Arrow down
@@ -775,9 +838,12 @@ function main() {
 				goingDown = true;
 				goingLeft = false;
 				goingRight = false;
-				
-				wholePlayerRotationMatrix = identityMatrix.slice();
-				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(0), [0, 1, 0]);
+				/*
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
+				*/
+
 			}
 		
 			if (key.keyCode == "37") { //Arrow left
@@ -786,9 +852,12 @@ function main() {
 				goingDown = false;
 				goingLeft = true;
 				goingRight = false;
-				
-				wholePlayerRotationMatrix = identityMatrix.slice();
-				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(270), [0, 1, 0]);
+				/*
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.1]);
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
+				*/
+
 			}
 		
 			if (key.keyCode == "39") { //Arrow right
@@ -797,46 +866,42 @@ function main() {
 				goingDown = false;
 				goingLeft = false;
 				goingRight = true;
-				
-				wholePlayerRotationMatrix = identityMatrix.slice();
-				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(90), [0, 1, 0]);
-				
-			}
+				/*
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
+				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
+				*/
 
-			if (key.keyCode == "38") { //Arrow up
-				//glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0.1, 0]);
-				//glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0.1, 0]);
+				
 			}
-			if (key.keyCode == "40") { //Arrow down
-				//glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -0.1, 0]);
-				//glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -0.1, 0]);
-			}
+			
+			
+
+		
 
 			
-			/*
-			if (key.keyCode == "87") { //w key		
-				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [1, 0, 0]);
-			}
-			if (key.keyCode == "83") { //s key				
-				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [1, 0, 0]);
-			}
-			if (key.keyCode == "81") { //e key		
-				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 1, 0]);
-			}
-			if (key.keyCode == "69") { //q key				
-				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 1, 0]);
-			}
-			if (key.keyCode == "68") { //d key		
-				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 0, 1]);
-			}
-			if (key.keyCode == "65") { //a key				
-				glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 0, 1]);
-			}	
-			*/
-			
-			
+		/*
+		if (key.keyCode == "87") { //w key		
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [1, 0, 0]);
 		}
+		if (key.keyCode == "83") { //s key				
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [1, 0, 0]);
+		}
+		if (key.keyCode == "81") { //e key		
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 1, 0]);
+		}
+		if (key.keyCode == "69") { //q key				
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 1, 0]);
+		}
+		if (key.keyCode == "68") { //d key		
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 0, 1]);
+		}
+		if (key.keyCode == "65") { //a key				
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 0, 1]);
+		}	
+		*/
 
+		}
 	}
 };
 
