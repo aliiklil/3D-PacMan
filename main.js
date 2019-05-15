@@ -27,10 +27,10 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
-	var goingUp = false;
-	var goingDown = true;
-	var goingLeft = false;
-	var goingRight = false;
+	var pressedUp = false;
+	var pressedDown = true;
+	var pressedLeft = false;
+	var pressedRight = false;
 	
 	
 	var leftEyeVertices = [
@@ -430,6 +430,9 @@ function main() {
 		halfSphereTranslationMatrices.push(identityMatrix.slice());
 	}
 	
+
+	glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 1, 0]);
+	glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 1, 0]);
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
 	
@@ -485,7 +488,7 @@ function main() {
 		
 		
 		if(lastPlayerX != playerX || lastPlayerY != playerY) {	
-			if(goingUp) {
+			if(pressedUp) {
 				up = true;
 				down = false;	
 				left = false;
@@ -494,7 +497,7 @@ function main() {
 				wholePlayerRotationMatrix = identityMatrix.slice();
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(180), [0, 1, 0]);
 			}
-			if(goingDown) {
+			if(pressedDown) {
 				up = false;
 				down = true;	
 				left = false;
@@ -504,7 +507,7 @@ function main() {
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(0), [0, 1, 0]);
 				
 			}
-			if(goingLeft) {
+			if(pressedLeft) {
 				up = false;
 				down = false;	
 				left = true;
@@ -514,7 +517,7 @@ function main() {
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(270), [0, 1, 0]);
 				
 			}
-			if(goingRight) {
+			if(pressedRight) {
 				up = false;
 				down = false;	
 				left = false;
@@ -817,90 +820,34 @@ function main() {
 		if(!cameraSelected) {
 		
 			if (key.keyCode == "38") { //Arrow up
-
-				goingUp = true;
-				goingDown = false;
-				goingLeft = false;
-				goingRight = false;
-				
-				/*
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
-				*/
-				
-
+				pressedUp = true;
+				pressedDown = false;
+				pressedLeft = false;
+				pressedRight = false;
 			}
 			
 			if (key.keyCode == "40") { //Arrow down
-
-				goingUp = false;
-				goingDown = true;
-				goingLeft = false;
-				goingRight = false;
-				/*
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
-				*/
-
+				pressedUp = false;
+				pressedDown = true;
+				pressedLeft = false;
+				pressedRight = false;
 			}
 		
 			if (key.keyCode == "37") { //Arrow left
-	
-				goingUp = false;
-				goingDown = false;
-				goingLeft = true;
-				goingRight = false;
-				/*
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.1]);
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
-				*/
 
+				pressedUp = false;
+				pressedDown = false;
+				pressedLeft = true;
+				pressedRight = false;
 			}
 		
 			if (key.keyCode == "39") { //Arrow right
-				
-				goingUp = false;
-				goingDown = false;
-				goingLeft = false;
-				goingRight = true;
-				/*
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
-				*/
-
-				
+				pressedUp = false;
+				pressedDown = false;
+				pressedLeft = false;
+				pressedRight = true;
 			}
 			
-			
-
-		
-
-			
-		/*
-		if (key.keyCode == "87") { //w key		
-			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [1, 0, 0]);
-		}
-		if (key.keyCode == "83") { //s key				
-			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [1, 0, 0]);
-		}
-		if (key.keyCode == "81") { //e key		
-			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 1, 0]);
-		}
-		if (key.keyCode == "69") { //q key				
-			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 1, 0]);
-		}
-		if (key.keyCode == "68") { //d key		
-			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], -0.1, [0, 0, 1]);
-		}
-		if (key.keyCode == "65") { //a key				
-			glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], 0.1, [0, 0, 1]);
-		}	
-		*/
-
 		}
 	}
 };
