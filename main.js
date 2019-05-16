@@ -368,7 +368,7 @@ function main() {
 	var halfSphereColors = [];
 	var halfSphereIndices = [];
 	
-	var latLongCount = 10; // Count of latitudes and longitudes
+	var latLongCount = 5; // Count of latitudes and longitudes
 
 	var size = 0.9;
 	
@@ -477,20 +477,52 @@ function main() {
 	var down = false;
 	var left = false;
 	var right = false;
-	
+		
 	var loop = function () {
 	
-		playerX = parseInt((halfSphereTranslationMatrices[0][14] + 14)/2);
-		playerY = parseInt(-(halfSphereTranslationMatrices[0][12] - 16)/2);
+		playerX = parseInt((halfSphereTranslationMatrices[0][14] + 16)/2);
+		playerY = parseInt(-(halfSphereTranslationMatrices[0][12] - 18)/2);
 		
-		console.log("x= " + playerX)
-		console.log("y= " + playerY)
+		plX = parseInt((halfSphereTranslationMatrices[0][14] + 16)/2 - 0.5);
+		plY = parseInt(-(halfSphereTranslationMatrices[0][12] - 18)/2 - 0.5);
+		
+		//console.log("playerX= " + playerX)
+		//console.log("playerY= " + playerY)
+		
+		//console.log("plX= " + plX)
+		//console.log("plY= " + plY)
 		
 		
+		if(pressedUp && labyrinth[plY-1][plX] == 1) {
+			pressedUp = false;
+			pressedDown = true;
+			pressedLeft = false;
+			pressedRight = false;
+		}
 		
+		if(pressedDown && labyrinth[plY+1][plX] == 1) {
+			pressedUp = true;
+			pressedDown = false;
+			pressedLeft = false;
+			pressedRight = false;
+		}
 		
+		if(pressedLeft && labyrinth[plY][plX-1] == 1) {
+			pressedUp = false;
+			pressedDown = false;
+			pressedLeft = false;
+			pressedRight = true;
+		}
+		
+		if(pressedRight && labyrinth[plY][plX+1] == 1) {
+			pressedUp = false;
+			pressedDown = false;
+			pressedLeft = true;
+			pressedRight = false;
+		}
+
 		if(lastPlayerX != playerX || lastPlayerY != playerY) {	
-			if(pressedUp && labyrinth[playerY-1][playerX] == 0) {
+			if(pressedUp && labyrinth[plY-1][plX] == 0) {
 				up = true;
 				down = false;	
 				left = false;
@@ -499,7 +531,7 @@ function main() {
 				wholePlayerRotationMatrix = identityMatrix.slice();
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(180), [0, 1, 0]);
 			}
-			if(pressedDown && labyrinth[playerY+1][playerX] == 0) {
+			if(pressedDown && labyrinth[plY+1][plX] == 0) {
 				up = false;
 				down = true;	
 				left = false;
@@ -509,7 +541,7 @@ function main() {
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(0), [0, 1, 0]);
 				
 			}
-			if(pressedLeft && labyrinth[playerY][playerX-1] == 0) {
+			if(pressedLeft && labyrinth[plY][plX-1] == 0) {
 				up = false;
 				down = false;	
 				left = true;
@@ -519,7 +551,7 @@ function main() {
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(270), [0, 1, 0]);
 				
 			}
-			if(pressedRight && labyrinth[playerY][playerX+1] == 0) {
+			if(pressedRight && labyrinth[plY][plX+1] == 0) {
 				up = false;
 				down = false;	
 				left = false;
@@ -529,6 +561,9 @@ function main() {
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(90), [0, 1, 0]);
 			}
 		}
+		
+		
+
 	
 		lastPlayerX = playerX;
 		lastPlayerY = playerY;
@@ -670,9 +705,10 @@ function main() {
 		} else {		
 			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], 0.1, [0, 1, 0]);
 		}
-
 		
+
 		if (up) {
+		
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
@@ -793,32 +829,9 @@ function main() {
 	window.addEventListener("keydown", checkKeyPress, false);
 	
 	function checkKeyPress(key) {
+
+
 	
-		if(cameraSelected) {
-			//Translation of camera
-			if (key.keyCode == "39") { //Arrow right
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
-			}
-			if (key.keyCode == "37") { //Arrow left
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
-			}
-			if (key.keyCode == "38") { //Arrow up
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, -0.1, 0]);
-			}
-			if (key.keyCode == "40") { //Arrow down
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0.1, 0]);
-			}
-			if (key.keyCode == "188") { //Comma
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
-			}
-			if (key.keyCode == "190") { //Point
-				glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
-			}
-		}
-	
-	
-		
-		//Translation
 		if(!cameraSelected) {
 		
 			if (key.keyCode == "38") { //Arrow up
