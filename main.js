@@ -360,31 +360,11 @@ function main() {
 	}
 	
 
-	
-	
-	
-	
-	var dotArray  = [
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-		[1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
-		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
-		[1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
-		[1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1],
-		[1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-		[1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1],
-		[1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1],
-		[1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-		[1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1],
-		[1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-		[1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1],
-		[1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1],
-		[1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1],
-		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-	];
-	
-	console.log(dotArray)
 
+	
+	
+	var dotArray  = labyrinth.map(inner => inner.slice());
+	
 	const dotColors = 
 	[
 		1.0, 1.0, 0.0,
@@ -789,27 +769,27 @@ function main() {
 
 		if (up) {
 		
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.1, 0, 0]);				
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.1, 0, 0]);	
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.5, 0, 0]);				
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.5, 0, 0]);	
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.5, 0, 0]);
 		}
 
 		if (down) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.1, 0, 0]);				
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.1, 0, 0]);	
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.5, 0, 0]);				
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.5, 0, 0]);	
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.5, 0, 0]);
 		}
 
 		if (left) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.1]);
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.1]);
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.5]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.5]);
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.5]);
 		}
 
 		if (right) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.1]);
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.1]);
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.5]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.5]);
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.5]);
 		}
 		
 		
@@ -926,12 +906,33 @@ function main() {
 				}
 			}
 		}
-		
-		console.log("A"+ dotArray[plX][plY])
-		
+
 		dotArray[plY][plX] = 1;
 		
-		console.log("B"+dotArray[plX][plY])
+		var allDotsEaten = true;
+		
+		for(var i = 0; i < dotArray.length; i++) {
+			for(var j = 0; j < dotArray[0].length; j++) {
+				if(dotArray[i][j] == 0) {
+					allDotsEaten = false;
+					console.log("AAAAAAAAAAAAAAA")
+					break;
+				}
+			}
+		}
+
+		
+		if(allDotsEaten) {
+		
+			dotArray  = labyrinth.map(inner => inner.slice());
+			
+			halfSphereTranslationMatrices[0] = identityMatrix.slice();
+			halfSphereTranslationMatrices[1] = identityMatrix.slice();
+			
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 1, 0]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 1, 0]);
+			
+		}
 		
 		
 		
