@@ -932,6 +932,8 @@ function main() {
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 1, 0]);
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 1, 0]);
 			
+			glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [1, 0, 0]);
+			glMatrix.mat4.multiply(viewMatrix, viewMatrix, shearMatrix)
 		}
 		
 		
