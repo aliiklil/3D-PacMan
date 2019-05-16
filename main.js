@@ -416,7 +416,7 @@ function main() {
 	var specularColor = [0.1, 0.1, 0.1];
 	
 	var lightPosition = [0, 20, -20];
-	var cameraPosition = [-5, 15, 1.5];
+	var cameraPosition = [0, 15, 0];
 	
 	//Create uniform matrices
 	var globalRotationMatrix = new Float32Array(16);
@@ -438,8 +438,15 @@ function main() {
 	
 	var viewMatrix = new Float32Array(16);
 	var projectionMatrix = new Float32Array(16);
-
-	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [-1, 0, -1], [0, 1, 0]);
+	
+	var shearMatrix = new Float32Array(16);
+	shearMatrix = identityMatrix.slice();
+	
+	shearMatrix[4] = 0.4;
+	shearMatrix[6] = -0.4;
+	
+	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [1, 0, 0]);
+	glMatrix.mat4.multiply(viewMatrix, viewMatrix, shearMatrix)
 	glMatrix.mat4.ortho(projectionMatrix, -15, 15, -15, 15, 0.1, 100);
 	//glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
 
