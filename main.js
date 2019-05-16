@@ -31,8 +31,7 @@ function main() {
 	var pressedDown = true;
 	var pressedLeft = false;
 	var pressedRight = false;
-	
-	
+			
 	var leftEyeVertices = [
 		-0.3500000238418579,
 		0.3999999761581421,
@@ -363,12 +362,98 @@ function main() {
 
 	
 	
+	
+	
+	var dotArray  = [
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
+		[1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+		[1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1],
+		[1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+		[1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1],
+		[1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1],
+		[1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1],
+		[1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+		[1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1],
+		[1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1],
+		[1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+	];
+	
+	console.log(dotArray)
+
+	const dotColors = 
+	[
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0
+	];
+	
+	var dotTranslationMatrices = [];
+	var dotScalingMatrix = identityMatrix.slice();
+	glMatrix.mat4.scale(dotScalingMatrix, dotScalingMatrix, [0.1, 0.1, 0.1]);
+	
+	for(var i = 0; i < labyrinth.length; i++) {
+		dotTranslationMatrices.push([]);
+		for(var j = 0; j < labyrinth[0].length; j++) {
+			 dotTranslationMatrices[i].push(identityMatrix.slice());
+		}
+	}
+	
+	for(var i = 0; i < labyrinth.length; i++) {
+		for(var j = 0; j < labyrinth[0].length; j++) {
+			if(labyrinth[i][j] == 0) {
+				glMatrix.mat4.translate(dotTranslationMatrices[i][j], dotTranslationMatrices[i][j], [2*(labyrinth.length-1-i)-14, 1, 2*j-14]);
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	var halfSphereVertices = [];
 	var halfSphereNormals = [];
 	var halfSphereColors = [];
 	var halfSphereIndices = [];
 	
-	var latLongCount = 5; // Count of latitudes and longitudes
+	var latLongCount = 4; // Count of latitudes and longitudes
 
 	var size = 0.9;
 	
@@ -799,6 +884,56 @@ function main() {
 				}
 			}
 		}
+		
+		
+		
+		
+		
+		//Draw dots
+		for(var i = 0; i < dotArray.length; i++) {
+			for(var j = 0; j < dotArray[0].length; j++) {
+				if(dotArray[i][j] == 0) {
+					
+					gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+					gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+					gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, dotTranslationMatrices[i][j]);
+					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, dotScalingMatrix);
+					gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+					gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+					gl.uniform3fv(specularColorUniformLocation, specularColor);
+					gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+					gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+							
+					gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeNormals), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(dotColors), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+					gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeIndices), gl.STATIC_DRAW);
+					
+					gl.drawElements(gl.TRIANGLES, cubeIndices.length, gl.UNSIGNED_SHORT, 0);
+					
+				}
+			}
+		}
+		
+		console.log("A"+ dotArray[plX][plY])
+		
+		dotArray[plY][plX] = 1;
+		
+		console.log("B"+dotArray[plX][plY])
+		
+		
 		
 		requestAnimationFrame(loop);
 	};
