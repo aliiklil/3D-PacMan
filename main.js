@@ -945,7 +945,17 @@ function main() {
 		
 		
 		if(jumping) {
-		
+
+			jumpingProgress = jumpingProgress + Math.PI/10;
+			
+			if(jumpingUp) {		
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, Math.sin(jumpingProgress), 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, Math.sin(jumpingProgress), 0]);
+			} else if (jumpingDown) {
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -Math.sin(jumpingProgress), 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -Math.sin(jumpingProgress), 0]);
+			}
+			
 			if(jumpingUp && jumpingProgress == Math.PI) {
 				jumpingUp = false;
 				jumpingDown = true;
@@ -957,20 +967,6 @@ function main() {
 				jumpingDown = false;
 				jumpingProgress = 0;
 				jumping = false;
-			}
-
-			jumpingProgress = jumpingProgress + Math.PI/10;
-			
-			if(jumpingUp) {
-							
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, Math.sin(jumpingProgress), 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, Math.sin(jumpingProgress), 0]);
-				
-			} else if (jumpingDown) {
-				
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -Math.sin(jumpingProgress), 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -Math.sin(jumpingProgress), 0]);
-				
 			}
 						
 		}
@@ -1004,21 +1000,21 @@ function main() {
 	
 		if(!cameraSelected) {
 		
-			if (key.keyCode == "38") { //Arrow up
+			if (key.keyCode == "38" && !jumping) { //Arrow up
 				pressedUp = true;
 				pressedDown = false;
 				pressedLeft = false;
 				pressedRight = false;
 			}
 			
-			if (key.keyCode == "40") { //Arrow down
+			if (key.keyCode == "40" && !jumping) { //Arrow down
 				pressedUp = false;
 				pressedDown = true;
 				pressedLeft = false;
 				pressedRight = false;
 			}
 		
-			if (key.keyCode == "37") { //Arrow left
+			if (key.keyCode == "37" && !jumping) { //Arrow left
 
 				pressedUp = false;
 				pressedDown = false;
@@ -1026,7 +1022,7 @@ function main() {
 				pressedRight = false;
 			}
 		
-			if (key.keyCode == "39") { //Arrow right
+			if (key.keyCode == "39" && !jumping) { //Arrow right
 				pressedUp = false;
 				pressedDown = false;
 				pressedLeft = false;
