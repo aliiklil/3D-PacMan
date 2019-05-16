@@ -549,6 +549,11 @@ function main() {
 	var down = false;
 	var left = false;
 	var right = false;
+	
+	var jumping = false;
+	var jumpingProgress = 0;
+	var jumpingUp = false;
+	var jumpingDown = false;
 		
 	var loop = function () {
 	
@@ -907,7 +912,9 @@ function main() {
 			}
 		}
 
-		dotArray[plY][plX] = 1;
+		if(!jumping) {
+			dotArray[plY][plX] = 1;
+		}
 		
 		var allDotsEaten = true;
 		
@@ -915,7 +922,6 @@ function main() {
 			for(var j = 0; j < dotArray[0].length; j++) {
 				if(dotArray[i][j] == 0) {
 					allDotsEaten = false;
-					console.log("AAAAAAAAAAAAAAA")
 					break;
 				}
 			}
@@ -938,6 +944,37 @@ function main() {
 		
 		
 		
+		if(jumping) {
+		
+			if(jumpingUp && jumpingProgress == Math.PI) {
+				jumpingUp = false;
+				jumpingDown = true;
+				jumpingProgress = 0;
+			}
+			
+			if(jumpingDown && jumpingProgress == Math.PI) {
+				jumpingUp = false;
+				jumpingDown = false;
+				jumpingProgress = 0;
+				jumping = false;
+			}
+
+			jumpingProgress = jumpingProgress + Math.PI/10;
+			
+			if(jumpingUp) {
+							
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, Math.sin(jumpingProgress), 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, Math.sin(jumpingProgress), 0]);
+				
+			} else if (jumpingDown) {
+				
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -Math.sin(jumpingProgress), 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -Math.sin(jumpingProgress), 0]);
+				
+			}
+						
+		}
+				
 		requestAnimationFrame(loop);
 	};
 	requestAnimationFrame(loop);
@@ -994,6 +1031,11 @@ function main() {
 				pressedDown = false;
 				pressedLeft = false;
 				pressedRight = true;
+			}
+			
+			if (key.keyCode == "32" && !jumping) { //Space bar
+				jumping = true;
+				jumpingUp = true;
 			}
 			
 		}
