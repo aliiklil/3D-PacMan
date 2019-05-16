@@ -471,7 +471,7 @@ function main() {
 	var playerX;
 	var playerY;
 	
-	var movementPossible = false;
+	var playerStanding = false;
 	
 	var up = false;
 	var down = false;
@@ -492,36 +492,9 @@ function main() {
 		//console.log("plX= " + plX)
 		//console.log("plY= " + plY)
 		
-		
-		if(pressedUp && labyrinth[plY-1][plX] == 1) {
-			pressedUp = false;
-			pressedDown = true;
-			pressedLeft = false;
-			pressedRight = false;
-		}
-		
-		if(pressedDown && labyrinth[plY+1][plX] == 1) {
-			pressedUp = true;
-			pressedDown = false;
-			pressedLeft = false;
-			pressedRight = false;
-		}
-		
-		if(pressedLeft && labyrinth[plY][plX-1] == 1) {
-			pressedUp = false;
-			pressedDown = false;
-			pressedLeft = false;
-			pressedRight = true;
-		}
-		
-		if(pressedRight && labyrinth[plY][plX+1] == 1) {
-			pressedUp = false;
-			pressedDown = false;
-			pressedLeft = true;
-			pressedRight = false;
-		}
 
-		if(lastPlayerX != playerX || lastPlayerY != playerY) {	
+		
+		if(lastPlayerX != playerX || lastPlayerY != playerY || (!up && !down && !left && !right)) {	
 			if(pressedUp && labyrinth[plY-1][plX] == 0) {
 				up = true;
 				down = false;	
@@ -560,16 +533,31 @@ function main() {
 				wholePlayerRotationMatrix = identityMatrix.slice();
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(90), [0, 1, 0]);
 			}
-		}
-		
-		
 
-	
+		}
+
+		
+		if(lastPlayerX != playerX || lastPlayerY != playerY) {	
+			if(up && labyrinth[plY-1][plX] == 1) {
+				up = false;
+			}
+
+			if(down && labyrinth[plY+1][plX] == 1) {
+				down = false;
+			}
+
+			if(left && labyrinth[plY][plX-1] == 1) {
+				left = false;
+			}
+
+			if(right && labyrinth[plY][plX+1] == 1) {
+				right = false;
+			}
+		}
+
+		
 		lastPlayerX = playerX;
 		lastPlayerY = playerY;
-		
-		 
-		
 		
 		gl.clearColor(0.9, 0.9, 0.9, 1.0);
 		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
