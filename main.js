@@ -28,7 +28,7 @@ function main() {
 	glMatrix.mat4.identity(identityMatrix);
 	
 	var pressedUp = false;
-	var pressedDown = true;
+	var pressedDown = false;
 	var pressedLeft = false;
 	var pressedRight = false;
 			
