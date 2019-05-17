@@ -145,44 +145,11 @@ function main() {
 		1, 33, 18
 	];
 
-	var cylinderColors = [
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-
-		
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 0.0, 0.0
-	];
+	var cylinderColors = []
+	
+	for(var i = 0; i < cylinderVertices.length; i++) {
+		cylinderColors.push(1.0, 0.0, 0.0);
+	}
 	
 	var cylinderNormals = cylinderVertices.slice();
 	
@@ -250,48 +217,15 @@ function main() {
 		0, 16, 1
 	];
 		
-	var playerEyeNormals = [
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0,
-		0, 1, 0
-	];
+	var playerEyeNormals = [];
+	for(var i = 0; i < playerEyeIndices.length; i++) {
+		playerEyeNormals.push(0, 1, 0);
+	}
 	
-	var playerEyeColors = [
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0
-	];
-		
-
-	
+	var playerEyeColors = [];
+	for(var i = 0; i < leftEyeVertices.length; i++) {
+		playerEyeColors.push(0, 0, 0);
+	}
 	
 	var groundPlaneVertices = [
 		16, 0, 16,
@@ -438,33 +372,10 @@ function main() {
 	
 	var dotArray  = labyrinth.map(inner => inner.slice());
 	
-	const dotColors = 
-	[
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0
-	];
+	var dotColors = [];
+	for(var i = 0; i < cubeVertices.length; i++) {
+		dotColors.push(1.0, 1.0, 0.0);
+	}
 	
 	var dotTranslationMatrices = [];
 	var dotScalingMatrix = identityMatrix.slice();
@@ -484,7 +395,6 @@ function main() {
 			}
 		}
 	}
-
 	
 	var halfSphereVertices = [];
 	var halfSphereNormals = [];
@@ -521,7 +431,7 @@ function main() {
 	
 	halfSphereVertices.push(0, 0, 0);
 	halfSphereColors.push(0, 0, 0);
-	
+
 	for (var i = 0; i <= latLongCount; i++) {
 		for (var j = 0; j <= latLongCount; j++) {
 			halfSphereIndices.push(halfSphereVertices.length);
