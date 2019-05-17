@@ -41,6 +41,10 @@ function main() {
 	enemyCylinderTranslationMatrices.push(identityMatrix.slice())
 	enemyCylinderTranslationMatrices.push(identityMatrix.slice())
 	
+	var wholeEnemyRotationMatrices = [];
+	wholeEnemyRotationMatrices.push(identityMatrix.slice());
+	wholeEnemyRotationMatrices.push(identityMatrix.slice());
+
 	var enemy1StartX = 8;
 	var enemy1StartY = 8;
 	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [enemy1StartX, 0, enemy1StartY]);
@@ -1003,28 +1007,32 @@ function main() {
 					enemy1Down = false;
 					enemy1Left = false;
 					enemy1Right = false;
-					
+					wholeEnemyRotationMatrices[0] = identityMatrix.slice();
+					glMatrix.mat4.rotate(wholeEnemyRotationMatrices[0], wholeEnemyRotationMatrices[0], glMatrix.glMatrix.toRadian(180), [0, 1, 0]);
 					newDirectionFound = true;
 				} else if(randomDirection == 1 && labyrinth[en1Y+1][en1X] == 0) {
 					enemy1Up = false;
 					enemy1Down = true;
 					enemy1Left = false;
 					enemy1Right = false;
-					
+					wholeEnemyRotationMatrices[0] = identityMatrix.slice();
+					glMatrix.mat4.rotate(wholeEnemyRotationMatrices[0], wholeEnemyRotationMatrices[0], glMatrix.glMatrix.toRadian(0), [0, 1, 0]);
 					newDirectionFound = true;
 				} else if(randomDirection == 2 && labyrinth[en1Y][en1X-1] == 0) {
 					enemy1Up = false;
 					enemy1Down = false;
 					enemy1Left = true;
 					enemy1Right = false;
-					
+					wholeEnemyRotationMatrices[0] = identityMatrix.slice();
+					glMatrix.mat4.rotate(wholeEnemyRotationMatrices[0], wholeEnemyRotationMatrices[0], glMatrix.glMatrix.toRadian(-90), [0, 1, 0]);
 					newDirectionFound = true;
 				} else if(randomDirection == 3 && labyrinth[en1Y][en1X+1] == 0) {
 					enemy1Up = false;
 					enemy1Down = false;
 					enemy1Left = false;
 					enemy1Right = true;
-					
+					wholeEnemyRotationMatrices[0] = identityMatrix.slice();
+					glMatrix.mat4.rotate(wholeEnemyRotationMatrices[0], wholeEnemyRotationMatrices[0], glMatrix.glMatrix.toRadian(90), [0, 1, 0]);
 					newDirectionFound = true;
 				}
 			}
@@ -1104,28 +1112,32 @@ function main() {
 					enemy2Down = false;
 					enemy2Left = false;
 					enemy2Right = false;
-					
+					wholeEnemyRotationMatrices[1] = identityMatrix.slice();
+					glMatrix.mat4.rotate(wholeEnemyRotationMatrices[1], wholeEnemyRotationMatrices[1], glMatrix.glMatrix.toRadian(180), [0, 1, 0]);
 					newDirectionFound = true;
 				} else if(randomDirection == 1 && labyrinth[en2Y+1][en2X] == 0) {
 					enemy2Up = false;
 					enemy2Down = true;
 					enemy2Left = false;
 					enemy2Right = false;
-					
+					wholeEnemyRotationMatrices[1] = identityMatrix.slice();
+					glMatrix.mat4.rotate(wholeEnemyRotationMatrices[1], wholeEnemyRotationMatrices[1], glMatrix.glMatrix.toRadian(0), [0, 1, 0]);
 					newDirectionFound = true;
 				} else if(randomDirection == 2 && labyrinth[en2Y][en2X-1] == 0) {
 					enemy2Up = false;
 					enemy2Down = false;
 					enemy2Left = true;
 					enemy2Right = false;
-					
+					wholeEnemyRotationMatrices[1] = identityMatrix.slice();
+					glMatrix.mat4.rotate(wholeEnemyRotationMatrices[1], wholeEnemyRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [0, 1, 0]);
 					newDirectionFound = true;
 				} else if(randomDirection == 3 && labyrinth[en2Y][en2X+1] == 0) {
 					enemy2Up = false;
 					enemy2Down = false;
 					enemy2Left = false;
 					enemy2Right = true;
-					
+					wholeEnemyRotationMatrices[1] = identityMatrix.slice();
+					glMatrix.mat4.rotate(wholeEnemyRotationMatrices[1], wholeEnemyRotationMatrices[1], glMatrix.glMatrix.toRadian(90), [0, 1, 0]);
 					newDirectionFound = true;
 				}
 			}
@@ -1153,7 +1165,7 @@ function main() {
 			//Draw cylinder for enemy
 			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyCylinderTranslationMatrices[i]);
 			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
@@ -1179,7 +1191,7 @@ function main() {
 			//Draw halfsphere for enemy
 			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
 			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrices[i]);
 			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
@@ -1202,7 +1214,7 @@ function main() {
 			gl.drawElements(gl.TRIANGLES, halfSphereIndices.length, gl.UNSIGNED_SHORT, 0);
 			
 			//Draw left eye for enemy
-			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
 			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrices[i]);
 			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
@@ -1226,7 +1238,7 @@ function main() {
 			
 
 			//Draw right eye for enemy
-			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
 			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrices[i]);
 			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
