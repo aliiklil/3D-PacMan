@@ -949,11 +949,11 @@ function main() {
 			jumpingProgress = jumpingProgress + Math.PI/10;
 			
 			if(jumpingUp) {		
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, Math.sin(jumpingProgress), 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, Math.sin(jumpingProgress), 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, Math.sin(jumpingProgress)*0.75, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, Math.sin(jumpingProgress)*0.75, 0]);
 			} else if (jumpingDown) {
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -Math.sin(jumpingProgress), 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -Math.sin(jumpingProgress), 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -Math.sin(jumpingProgress)*0.75, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -Math.sin(jumpingProgress)*0.75, 0]);
 			}
 			
 			if(jumpingUp && jumpingProgress == Math.PI) {
