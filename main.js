@@ -401,6 +401,7 @@ function main() {
 
 	
 	var dotArray  = labyrinth.map(inner => inner.slice());
+	dotArray[8][7] = 1;
 	
 	var dotColors = [];
 	for(var i = 0; i < cubeVertices.length; i++) {
@@ -879,6 +880,7 @@ function main() {
 		
 		if(!jumping && allDotsEaten) {
 			dotArray  = labyrinth.map(inner => inner.slice());
+			dotArray[8][7] = 1;
 			
 			halfSphereTranslationMatrices[0] = identityMatrix.slice();
 			halfSphereTranslationMatrices[1] = identityMatrix.slice();
@@ -913,6 +915,9 @@ function main() {
 			jumpingDown = false;
 			jumpingProgress = 0;
 			jumping = false;
+			
+			pointCounter = 0;
+			document.getElementById("pointCounter").innerHTML = pointCounter;
 		}
 		
 		
@@ -1247,6 +1252,7 @@ function main() {
 		
 		if(!jumping && ((plX == en1X && plY == en1Y) || (plX == en2X && plY == en2Y))) {
 			dotArray  = labyrinth.map(inner => inner.slice());
+			dotArray[8][7] = 1;
 			
 			halfSphereTranslationMatrices[0] = identityMatrix.slice();
 			halfSphereTranslationMatrices[1] = identityMatrix.slice();
@@ -1281,6 +1287,9 @@ function main() {
 			jumpingDown = false;
 			jumpingProgress = 0;
 			jumping = false;
+			
+			pointCounter = 0;
+			document.getElementById("pointCounter").innerHTML = pointCounter;
 		}
 				
 		requestAnimationFrame(loop);
