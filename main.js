@@ -27,6 +27,164 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
+	
+	
+	
+	var cylinderVertices = [
+		0, 0, 0,
+		1, 0, 0,
+		0.92, 0, 0.38,
+		0.7, 0, 0.7,
+		0.38, 0, 0.92,
+		0, 0, 1,
+		-0.38, 0, 0.92,
+		-0.7, 0, 0.7,
+		-0.92, 0, 0.38,
+		-1, 0, 0,
+		-0.92, 0, -0.38,
+		-0.7, 0, -0.7,
+		-0.38, 0, -0.92,
+		0, 0, -1,
+		0.38, 0, -0.92,
+		0.7, 0, -0.7,
+		0.92, 0, -0.38,
+		
+		0, 1, 0,
+		1, 1, 0,
+		0.92, 1, 0.38,
+		0.7, 1, 0.7,
+		0.38, 1, 0.92,
+		0, 1, 1,
+		-0.38, 1, 0.92,
+		-0.7, 1, 0.7,
+		-0.92, 1, 0.38,
+		-1, 1, 0,
+		-0.92, 1, -0.38,
+		-0.7, 1, -0.7,
+		-0.38, 1, -0.92,
+		0, 1, -1,
+		0.38, 1, -0.92,
+		0.7, 1, -0.7,
+		0.92, 1, -0.38
+	];
+	
+	var cylinderIndices = [
+		0, 1, 2,
+		0, 2, 3,
+		0, 3, 4,
+		0, 4, 5,
+		0, 5, 6,
+		0, 6, 7,
+		0, 7, 8,
+		0, 8, 9,
+		0, 9, 10,
+		0, 10, 11,
+		0, 11, 12,
+		0, 12, 13,
+		0, 13, 14,
+		0, 14, 15,
+		0, 15, 16,
+		0, 16, 1,
+	
+		17, 18, 19,
+		17, 19, 20,
+		17, 20, 21,
+		17, 21, 22,
+		17, 22, 23,
+		17, 23, 24,
+		17, 24, 25,
+		17, 25, 26,
+		17, 26, 27,
+		17, 27, 28,
+		17, 28, 29,
+		17, 29, 30,
+		17, 30, 31,
+		17, 31, 32,
+		17, 32, 33,
+		17, 33, 18,
+		
+		18, 1, 2,
+		19, 2, 3,
+		20, 3, 4,
+		21, 4, 5,
+		22, 5, 6,
+		23, 6, 7,
+		24, 7, 8,
+		25, 8, 9,
+		26, 9, 10,
+		27, 10, 11,
+		28, 11, 12,
+		29, 12, 13,
+		30, 13, 14,
+		31, 14, 15,
+		32, 15, 16,
+		33, 16, 1,
+		
+		2, 18, 19,
+		3, 19, 20,
+		4, 20, 21,
+		5, 21, 22,
+		6, 22, 23,
+		7, 23, 24,
+		8, 24, 25,
+		9, 25, 26,
+		10, 26, 27,
+		11, 27, 28,
+		12, 28, 29,
+		13, 29, 30,
+		14, 30, 31,
+		15, 31, 32,
+		16, 32, 33,
+		1, 33, 18
+	];
+
+	var cylinderColors = [
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+
+		
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0,
+		1.0, 0.0, 0.0
+	];
+	
+	var cylinderNormals = cylinderVertices.slice();
+	
+	
+	
+	
+	
+	
+	
 	var pressedUp = false;
 	var pressedDown = false;
 	var pressedLeft = false;
@@ -433,7 +591,7 @@ function main() {
 	var halfSphereColors = [];
 	var halfSphereIndices = [];
 	
-	var latLongCount = 4; // Count of latitudes and longitudes
+	var latLongCount = 5; // Count of latitudes and longitudes
 
 	var size = 0.9;
 	
@@ -512,8 +670,8 @@ function main() {
 	
 	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [1, 0, 0]);
 	glMatrix.mat4.multiply(viewMatrix, viewMatrix, shearMatrix)
-	glMatrix.mat4.ortho(projectionMatrix, -15, 15, -15, 15, 0.1, 100);
-	//glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
+	//glMatrix.mat4.ortho(projectionMatrix, -15, 15, -15, 15, 0.1, 100);
+	glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
 
     var positionAttribLocation = gl.getAttribLocation(program, 'vertexPosition');
 	gl.enableVertexAttribArray(positionAttribLocation);
@@ -970,6 +1128,38 @@ function main() {
 			}
 						
 		}
+		
+		
+		
+		//Draw cylinder
+		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+		gl.uniform3fv(specularColorUniformLocation, specularColor);
+		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+				
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinderIndices), gl.STATIC_DRAW);
+		
+		gl.drawElements(gl.TRIANGLES, cylinderIndices.length, gl.UNSIGNED_SHORT, 0);
 				
 		requestAnimationFrame(loop);
 	};
@@ -996,7 +1186,32 @@ function main() {
 	
 	function checkKeyPress(key) {
 
-
+		if(cameraSelected) {
+			if (key.keyCode == "39") { //Arrow right
+					glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
+					cameraPosition = [cameraPosition[0] + 0.1, cameraPosition[1], cameraPosition[2]];
+				}
+				if (key.keyCode == "37") { //Arrow left
+					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
+					cameraPosition = [cameraPosition[0] - 0.1, cameraPosition[1], cameraPosition[2]];
+				}
+				if (key.keyCode == "38") { //Arrow up
+					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, -0.1, 0]);
+					cameraPosition = [cameraPosition[0], cameraPosition[1] + 0.1, cameraPosition[2]];
+				}
+				if (key.keyCode == "40") { //Arrow down
+					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0.1, 0]);
+					cameraPosition = [cameraPosition[0], cameraPosition[1] - 0.1, cameraPosition[2]];
+				}
+				if (key.keyCode == "188") { //Comma
+					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
+					cameraPosition = [cameraPosition[0], cameraPosition[1], cameraPosition[2] + 0.1];
+				}
+				if (key.keyCode == "190") { //Point
+					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
+					cameraPosition = [cameraPosition[0], cameraPosition[1], cameraPosition[2] - 0.1];
+				}
+		}
 	
 		if(!cameraSelected) {
 		
