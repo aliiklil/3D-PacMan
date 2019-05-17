@@ -504,7 +504,6 @@ function main() {
 			halfSphereColors.push(1, 1, 0);
 			
 			if (i < latLongCount && j < latLongCount) {
-			
 				halfSphereIndices.push(i * (latLongCount + 1) + j);
 				halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
 				halfSphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
@@ -512,7 +511,6 @@ function main() {
 				halfSphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
 				halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
 				halfSphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
-				
 			}
 		}
 	}
@@ -522,9 +520,9 @@ function main() {
 	
 	for (var i = 0; i <= latLongCount; i++) {
 		for (var j = 0; j <= latLongCount; j++) {
-		halfSphereIndices.push(halfSphereVertices.length);
-		halfSphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
-		halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
+			halfSphereIndices.push(halfSphereVertices.length);
+			halfSphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
+			halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
 		}
 	}
 	
@@ -549,7 +547,6 @@ function main() {
 		halfSphereTranslationMatrices.push(identityMatrix.slice());
 	}
 	
-
 	glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 1, 0]);
 	glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 1, 0]);
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
@@ -690,6 +687,9 @@ function main() {
 		var lightPositionUniformLocation = gl.getUniformLocation(program, 'lightPosition');
 		var cameraPositionUniformLocation = gl.getUniformLocation(program, 'cameraPosition');
 		
+		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		
 		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
 		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
 		gl.uniform3fv(specularColorUniformLocation, specularColor);
@@ -697,14 +697,11 @@ function main() {
 		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 
 		//Draw ground plane
-		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, groundPlaneRotationMatrix);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, groundPlaneTranslationMatrix);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
 
-		
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneVertices), gl.STATIC_DRAW);
 		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
@@ -724,8 +721,6 @@ function main() {
 		
 		
 		//Draw left eye
-		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
@@ -751,8 +746,6 @@ function main() {
 		
 		
 		//Draw right eye
-		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
@@ -816,7 +809,6 @@ function main() {
 		//Draw halfSpheres
 		for(var i = 0; i < 2; i++) {
 			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[i]);
 			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[i]);
@@ -847,8 +839,6 @@ function main() {
 			for(var j = 0; j < labyrinth[0].length; j++) {
 				if(labyrinth[i][j] == 1) {
 					
-					gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-					gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 					gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, cubeTranslationMatrices[i][j]);
@@ -884,8 +874,6 @@ function main() {
 			for(var j = 0; j < dotArray[0].length; j++) {
 				if(dotArray[i][j] == 0) {
 					
-					gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-					gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 					gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, dotTranslationMatrices[i][j]);
@@ -1039,11 +1027,7 @@ function main() {
 		}
 		
 	}
-	
-	window.addEventListener("keyup", function(event) {
-
-	});
-	
+		
 	window.addEventListener("keydown", checkKeyPress, false);
 	
 	function checkKeyPress(key) {
@@ -1105,7 +1089,7 @@ function main() {
 				pressedLeft = false;
 				pressedRight = true;
 			}
-			
+		
 			if (key.keyCode == "32" && !jumping) { //Space bar
 				jumping = true;
 				jumpingUp = true;
