@@ -30,8 +30,8 @@ function main() {
 	var enemyHalfSphereTranslationMatrices = [];
 	enemyHalfSphereTranslationMatrices.push(identityMatrix.slice());
 	enemyHalfSphereTranslationMatrices.push(identityMatrix.slice());
-	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 1, 0]);
-	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [2, 1, 0]);
+	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [8, 1, 8]);
+	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [-12, 1, -6]);
 	
 	var enemyHalfSphereRotationMatrix = new Float32Array(16);
 	enemyHalfSphereRotationMatrix = identityMatrix.slice();
@@ -40,8 +40,8 @@ function main() {
 	var enemyCylinderTranslationMatrices = [];
 	enemyCylinderTranslationMatrices.push(identityMatrix.slice())
 	enemyCylinderTranslationMatrices.push(identityMatrix.slice())
-	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, 0]);
-	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [2, 0, 0]);
+	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [8, 0, 8]);
+	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [-12, 0, -6]);
 	
 
 	
@@ -461,7 +461,7 @@ function main() {
 	var specularColor = [0.1, 0.1, 0.1];
 	
 	var lightPosition = [0, 20, -20];
-	var cameraPosition = [0, 5, 0];
+	var cameraPosition = [0, 15, 0];
 	
 	//Create uniform matrices
 	var globalRotationMatrix = new Float32Array(16);
@@ -491,8 +491,8 @@ function main() {
 	
 	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [1, 0, 0]);
 	glMatrix.mat4.multiply(viewMatrix, viewMatrix, shearMatrix)
-	//glMatrix.mat4.ortho(projectionMatrix, -15, 15, -15, 15, 0.1, 100);
-	glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
+	glMatrix.mat4.ortho(projectionMatrix, -15, 15, -15, 15, 0.1, 100);
+	//glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
 
     var positionAttribLocation = gl.getAttribLocation(program, 'vertexPosition');
 	gl.enableVertexAttribArray(positionAttribLocation);
