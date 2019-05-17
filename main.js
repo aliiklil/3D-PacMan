@@ -27,21 +27,28 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
-	var enemyHalfSphereTranslationMatrices = [];
-	enemyHalfSphereTranslationMatrices.push(identityMatrix.slice());
-	enemyHalfSphereTranslationMatrices.push(identityMatrix.slice());
-	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [8, 1, 8]);
-	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [-12, 1, -6]);
 	
 	var enemyHalfSphereRotationMatrix = new Float32Array(16);
 	enemyHalfSphereRotationMatrix = identityMatrix.slice();
 	glMatrix.mat4.rotate(enemyHalfSphereRotationMatrix, enemyHalfSphereRotationMatrix, glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
 	
+	var enemyHalfSphereTranslationMatrices = [];
+	enemyHalfSphereTranslationMatrices.push(identityMatrix.slice());
+	enemyHalfSphereTranslationMatrices.push(identityMatrix.slice());
+
 	var enemyCylinderTranslationMatrices = [];
 	enemyCylinderTranslationMatrices.push(identityMatrix.slice())
 	enemyCylinderTranslationMatrices.push(identityMatrix.slice())
-	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [8, 0, 8]);
-	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [-12, 0, -6]);
+	
+	var enemy1StartX = 8;
+	var enemy1StartY = 8;
+	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [enemy1StartX, 0, enemy1StartY]);
+	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [enemy1StartX, 1, enemy1StartY]);
+		
+	var enemy2StartX = -12;
+	var enemy2StartY = -6;
+	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [enemy2StartX, 0, enemy2StartY]);
+	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [enemy2StartX, 1, enemy2StartY]);
 
 	var enemy1Up = false;
 	var enemy1Down = false;
@@ -878,6 +885,26 @@ function main() {
 			
 			glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [1, 0, 0]);
 			glMatrix.mat4.multiply(viewMatrix, viewMatrix, shearMatrix)
+			
+			enemyCylinderTranslationMatrices[0] = identityMatrix.slice();
+			enemyHalfSphereTranslationMatrices[0] = identityMatrix.slice();
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [enemy1StartX, 0, enemy1StartY]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [enemy1StartX, 1, enemy1StartY]);
+			
+			enemyHalfSphereTranslationMatrices[1] = identityMatrix.slice();
+			enemyCylinderTranslationMatrices[1] = identityMatrix.slice();
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [enemy2StartX, 0, enemy2StartY]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [enemy2StartX, 1, enemy2StartY]);
+			
+			pressedUp = false;
+			pressedDown = false;
+			pressedLeft = false;
+			pressedRight = false;
+			
+			up = false;
+			down = false;
+			right = false;
+			left = false;
 		}
 		
 		
@@ -1208,8 +1235,39 @@ function main() {
 
 			gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
 				
-				
+		}
+		
+		if(!jumping && (plX == en1X && plY == en1Y) || (plX == en2X && plY == en2Y)) {
+			dotArray  = labyrinth.map(inner => inner.slice());
 			
+			halfSphereTranslationMatrices[0] = identityMatrix.slice();
+			halfSphereTranslationMatrices[1] = identityMatrix.slice();
+			
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 1, 0]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 1, 0]);
+			
+			glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [1, 0, 0]);
+			glMatrix.mat4.multiply(viewMatrix, viewMatrix, shearMatrix)
+			
+			enemyCylinderTranslationMatrices[0] = identityMatrix.slice();
+			enemyHalfSphereTranslationMatrices[0] = identityMatrix.slice();
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [enemy1StartX, 0, enemy1StartY]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [enemy1StartX, 1, enemy1StartY]);
+			
+			enemyHalfSphereTranslationMatrices[1] = identityMatrix.slice();
+			enemyCylinderTranslationMatrices[1] = identityMatrix.slice();
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [enemy2StartX, 0, enemy2StartY]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [enemy2StartX, 1, enemy2StartY]);
+			
+			pressedUp = false;
+			pressedDown = false;
+			pressedLeft = false;
+			pressedRight = false;
+			
+			up = false;
+			down = false;
+			right = false;
+			left = false;
 		}
 				
 		requestAnimationFrame(loop);
