@@ -27,6 +27,8 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
+	var enemyHalfSphereTranslationMatricx = new Float32Array(16);
+	enemyHalfSphereTranslationMatrix = identityMatrix.slice();
 	
 	
 	
@@ -179,123 +181,49 @@ function main() {
 	
 	var cylinderNormals = cylinderVertices.slice();
 	
-	
-	
-	
-	
-	
-	
 	var pressedUp = false;
 	var pressedDown = false;
 	var pressedLeft = false;
 	var pressedRight = false;
 			
 	var leftEyeVertices = [
-		-0.3500000238418579,
-		0.3999999761581421,
-		0.9000000953674316,
-		-0.20781731605529785,
-		0.4989203214645386,
-		0.9999942779541016,
-		-0.21919190883636475,
-		0.4369772672653198,
-		1.0454440116882324,
-		-0.2504720687866211,
-		0.3697164058685303,
-		1.0684552192687988,
-		-0.2959705591201782,
-		0.3067816495895386,
-		1.06740140914917,
-		-0.3500000238418579,
-		0.25781726837158203,
-		1.0406560897827148,
-		-0.4040294885635376,
-		0.23160219192504883,
-		0.9914054870605469,
-		-0.4495279788970947,
-		0.23122775554656982,
-		0.9284634590148926,
-		-0.4808081388473511,
-		0.254963755607605,
-		0.8614544868469238,
-		-0.49218273162841797,
-		0.3010796308517456,
-		0.8000059127807617,
-		-0.4808081388473511,
-		0.36302268505096436,
-		0.7545561790466309,
-		-0.4495279788970947,
-		0.4302835464477539,
-		0.7315449714660645,
-		-0.4040294885635376,
-		0.4932183027267456,
-		0.7325987815856934,
-		-0.3500000238418579,
-		0.5421826839447021,
-		0.7593441009521484,
-		-0.2959705591201782,
-		0.5683977603912354,
-		0.8085947036743164,
-		-0.2504720687866211,
-		0.5687720775604248,
-		0.8715367317199707,
-		-0.21919190883636475,
-		0.5450360774993896,
-		0.9385457038879395
+		-0.3500000238418579, 0.3999999761581421, 0.9000000953674316,
+		-0.20781731605529785, 0.4989203214645386, 0.9999942779541016,
+		-0.21919190883636475, 0.4369772672653198, 1.0454440116882324,
+		-0.2504720687866211, 0.3697164058685303, 1.0684552192687988,
+		-0.2959705591201782, 0.3067816495895386, 1.06740140914917,
+		-0.3500000238418579, 0.25781726837158203, 1.0406560897827148,
+		-0.4040294885635376, 0.23160219192504883, 0.9914054870605469,
+		-0.4495279788970947, 0.23122775554656982, 0.9284634590148926,
+		-0.4808081388473511, 0.254963755607605, 0.8614544868469238,
+		-0.49218273162841797, 0.3010796308517456, 0.8000059127807617,
+		-0.4808081388473511, 0.36302268505096436, 0.7545561790466309,
+		-0.4495279788970947, 0.4302835464477539, 0.7315449714660645,
+		-0.4040294885635376, 0.4932183027267456, 0.7325987815856934,
+		-0.3500000238418579, 0.5421826839447021, 0.7593441009521484,
+		-0.2959705591201782, 0.5683977603912354, 0.8085947036743164,
+		-0.2504720687866211, 0.5687720775604248, 0.8715367317199707,
+		-0.21919190883636475, 0.5450360774993896, 0.9385457038879395
 	];
 
 	var rightEyeVertices = [
-		-0.3500000238418579,
-		-0.2999999523162842,
-		0.9000000953674316,
-		-0.5094282627105713,
-		-0.2285773754119873,
-		0.8026275634765625,
-		-0.5042612552642822,
-		-0.3006542921066284,
-		0.774162769317627,
-		-0.4755765199661255,
-		-0.3722519874572754,
-		0.7650547027587891,
-		-0.42895209789276123,
-		-0.4335278272628784,
-		0.7752246856689453,
-		-0.3699667453765869,
-		-0.4746396541595459,
-		0.8045940399169922,
-		-0.30778658390045166,
-		-0.4878089427947998,
-		0.8492283821105957,
-		-0.252376914024353,
-		-0.4722435474395752,
-		0.9013767242431641,
-		-0.21091341972351074,
-		-0.4320716857910156,
-		0.9533286094665527,
-		-0.19057178497314453,
-		-0.37142252922058105,
-		0.9973726272583008,
-		-0.19573867321014404,
-		-0.29934561252593994,
-		1.0258374214172363,
-		-0.22442352771759033,
-		-0.22774791717529297,
-		1.0349454879760742,
-		-0.2710479497909546,
-		-0.16647207736968994,
-		1.024775505065918,
-		-0.3300333023071289,
-		-0.12536025047302246,
-		0.9954061508178711,
-		-0.39221346378326416,
-		-0.11219096183776855,
-		0.9507718086242676,
-		-0.4476231336593628,
-		-0.12775635719299316,
-		0.8986234664916992,
-		-0.4890866279602051,
-		-0.16792821884155273,
-		0.8466715812683105
+		-0.3500000238418579, -0.2999999523162842, 0.9000000953674316,
+		-0.5094282627105713, -0.2285773754119873, 0.8026275634765625,
+		-0.5042612552642822, -0.3006542921066284, 0.774162769317627,
+		-0.4755765199661255, -0.3722519874572754, 0.7650547027587891,
+		-0.42895209789276123, -0.4335278272628784, 0.7752246856689453,
+		-0.3699667453765869, -0.4746396541595459, 0.8045940399169922,
+		-0.30778658390045166, -0.4878089427947998, 0.8492283821105957,
+		-0.252376914024353, -0.4722435474395752, 0.9013767242431641,
+		-0.21091341972351074, -0.4320716857910156, 0.9533286094665527,
+		-0.19057178497314453, -0.37142252922058105, 0.9973726272583008,
+		-0.19573867321014404, -0.29934561252593994, 1.0258374214172363,
+		-0.22442352771759033, -0.22774791717529297, 1.0349454879760742,
+		-0.2710479497909546, -0.16647207736968994, 1.024775505065918,
+		-0.3300333023071289, -0.12536025047302246, 0.9954061508178711,
+		-0.39221346378326416, -0.11219096183776855, 0.9507718086242676,
+		-0.4476231336593628, -0.12775635719299316, 0.8986234664916992,
+		-0.4890866279602051, -0.16792821884155273, 0.8466715812683105
 	];
 		
 	var playerEyeIndices = [
@@ -417,27 +345,22 @@ function main() {
 		1.0, 1.0, -1.0,  
 		-1.0, 1.0, -1.0,   
 		-1.0, 1.0, 1.0,   
-
 		-1.0, -1.0, -1.0,
 		-1.0, 1.0, -1.0, 
 		-1.0, 1.0, 1.0,  
 		-1.0, -1.0, 1.0,  
-		
 		1.0, -1.0, 1.0,    
 		1.0, -1.0, -1.0,
 		-1.0, -1.0, -1.0,   
 		-1.0, -1.0, 1.0,  
-
 		1.0, -1.0, -1.0, 
 		1.0, 1.0, -1.0,  
 		1.0, 1.0, 1.0,    
 		1.0, -1.0, 1.0,  
-
 		-1.0, -1.0, 1.0,   
 		-1.0, 1.0, 1.0,   
 		1.0, 1.0, 1.0,   
 		1.0, -1.0, 1.0,   
-	
 		-1.0, -1.0, -1.0,   
 		-1.0, 1.0, -1.0,
 		1.0, 1.0, -1.0,   
@@ -452,27 +375,22 @@ function main() {
 		0.0, 0.5, 0.9,
 		0.0, 0.5, 0.9,
 		0.0, 0.5, 0.9,
-
 		0.0, 0.2, 0.5,
 		0.0, 0.2, 0.5,
 		0.0, 0.2, 0.5,
 		0.0, 0.2, 0.5,
-
 		0.9, 0.0, 0.6,
 		0.9, 0.0, 0.6,
 		0.9, 0.0, 0.6,
 		0.9, 0.0, 0.6,
-		
 		0.0, 0.2, 0.5,
 		0.0, 0.2, 0.5,
 		0.0, 0.2, 0.5,
 		0.0, 0.2, 0.5,
-
 		0.0, 0.2, 0.8,
 		0.0, 0.2, 0.8,
 		0.0, 0.2, 0.8,
 		0.0, 0.2, 0.8,
-		
 		0.0, 0.0, 0.3,
 		0.0, 0.0, 0.3,
 		0.0, 0.0, 0.3,
@@ -483,19 +401,14 @@ function main() {
 	[
 		0, 1, 2,
 		0, 2, 3,
-
 		5, 4, 6,
 		6, 4, 7,
-
 		8, 9, 10,
 		8, 10, 11,
-
 		13, 12, 14,
 		15, 14, 12,
-
 		16, 17, 18,
 		16, 18, 19,
-
 		21, 20, 22,
 		22, 20, 23
 	];
@@ -639,7 +552,7 @@ function main() {
 	var specularColor = [0.1, 0.1, 0.1];
 	
 	var lightPosition = [0, 20, -20];
-	var cameraPosition = [0, 15, 0];
+	var cameraPosition = [0, 5, 0];
 	
 	//Create uniform matrices
 	var globalRotationMatrix = new Float32Array(16);
@@ -1131,7 +1044,7 @@ function main() {
 		
 		
 		
-		//Draw cylinder
+		//Draw cylinder for enemy
 		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
@@ -1160,6 +1073,37 @@ function main() {
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinderIndices), gl.STATIC_DRAW);
 		
 		gl.drawElements(gl.TRIANGLES, cylinderIndices.length, gl.UNSIGNED_SHORT, 0);
+		
+		
+		//Draw halfsphere for enemy
+		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+		gl.uniform3fv(specularColorUniformLocation, specularColor);
+		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+				
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(halfSphereIndices), gl.STATIC_DRAW);
+		
+		gl.drawElements(gl.TRIANGLES, halfSphereIndices.length, gl.UNSIGNED_SHORT, 0);
 				
 		requestAnimationFrame(loop);
 	};
