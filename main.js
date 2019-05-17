@@ -874,7 +874,7 @@ function main() {
 		}
 
 		
-		if(allDotsEaten) {
+		if(!jumping && allDotsEaten) {
 			dotArray  = labyrinth.map(inner => inner.slice());
 			
 			halfSphereTranslationMatrices[0] = identityMatrix.slice();
@@ -905,6 +905,11 @@ function main() {
 			down = false;
 			right = false;
 			left = false;
+			
+			jumpingUp = false;
+			jumpingDown = false;
+			jumpingProgress = 0;
+			jumping = false;
 		}
 		
 		
@@ -1237,7 +1242,7 @@ function main() {
 				
 		}
 		
-		if(!jumping && (plX == en1X && plY == en1Y) || (plX == en2X && plY == en2Y)) {
+		if(!jumping && ((plX == en1X && plY == en1Y) || (plX == en2X && plY == en2Y))) {
 			dotArray  = labyrinth.map(inner => inner.slice());
 			
 			halfSphereTranslationMatrices[0] = identityMatrix.slice();
@@ -1268,6 +1273,11 @@ function main() {
 			down = false;
 			right = false;
 			left = false;
+			
+			jumpingUp = false;
+			jumpingDown = false;
+			jumpingProgress = 0;
+			jumping = false;
 		}
 				
 		requestAnimationFrame(loop);
