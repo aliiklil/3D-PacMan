@@ -27,10 +27,15 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
-	var enemyHalfSphereTranslationMatricx = new Float32Array(16);
+	var enemyHalfSphereTranslationMatrix = new Float32Array(16);
 	enemyHalfSphereTranslationMatrix = identityMatrix.slice();
 	
-	
+	var enemyHalfSphereRotationMatrix = new Float32Array(16);
+	enemyHalfSphereRotationMatrix = identityMatrix.slice();
+
+	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrix, enemyHalfSphereTranslationMatrix, [0, 1, 0]);
+	glMatrix.mat4.rotate(enemyHalfSphereRotationMatrix, enemyHalfSphereRotationMatrix, glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
+
 	
 	var cylinderVertices = [
 		0, 0, 0,
@@ -455,7 +460,6 @@ function main() {
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
-
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
@@ -489,7 +493,7 @@ function main() {
 	
 	var latLongCount = 5; // Count of latitudes and longitudes
 
-	var size = 0.9;
+	var size = 1;
 	
 	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the halfSphere
 		for (var j = 0; j <= latLongCount; j++) {
@@ -990,8 +994,8 @@ function main() {
 		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
 		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
-		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
-		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrix);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
 				
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -1003,13 +1007,61 @@ function main() {
 		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereColors), gl.STATIC_DRAW);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderColors), gl.STATIC_DRAW);
 		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 		
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(halfSphereIndices), gl.STATIC_DRAW);
 		
 		gl.drawElements(gl.TRIANGLES, halfSphereIndices.length, gl.UNSIGNED_SHORT, 0);
+		
+		//Draw left eye for enemy
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrix);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(leftEyeVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
+
+		gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
+		
+		
+		
+		//Draw right eye for enemy
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrix);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rightEyeVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
+
+		gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
 				
 		requestAnimationFrame(loop);
 	};
@@ -1098,6 +1150,3 @@ function main() {
 		}
 	}
 };
-
-
-
