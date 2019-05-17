@@ -42,8 +42,16 @@ function main() {
 	enemyCylinderTranslationMatrices.push(identityMatrix.slice())
 	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [8, 0, 8]);
 	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [-12, 0, -6]);
-	
 
+	var enemy1Up = false;
+	var enemy1Down = false;
+	var enemy1Left = false;
+	var enemy1Right = false;
+	
+	var enemy2Up = false;
+	var enemy2Down = false;
+	var enemy2Left = false;
+	var enemy2Right = false;
 	
 	var cylinderVertices = [
 		0, 0, 0,
@@ -518,9 +526,10 @@ function main() {
 
 	var lastPlayerX;
 	var lastPlayerY;
-	
 	var playerX;
 	var playerY;
+	var plX;
+	var plY;
 	
 	var playerStanding = false;
 	
@@ -533,6 +542,13 @@ function main() {
 	var jumpingProgress = 0;
 	var jumpingUp = false;
 	var jumpingDown = false;
+
+	var lastEnemy1X;
+	var lastEnemy1Y;
+	var enemy1X;
+	var enemy1Y;
+	var en1X;
+	var en1Y;
 		
 	var loop = function () {
 	
@@ -886,6 +902,103 @@ function main() {
 						
 		}
 		
+
+		
+		enemy1X = parseInt((enemyHalfSphereTranslationMatrices[0][14] + 16)/2);
+		enemy1Y = parseInt(-(enemyHalfSphereTranslationMatrices[0][12] - 18)/2);
+		
+		en1X = parseInt((enemyHalfSphereTranslationMatrices[0][14] + 16)/2 - 0.5);
+		en1Y = parseInt(-(enemyHalfSphereTranslationMatrices[0][12] - 18)/2 - 0.5);
+				
+		if(lastEnemy1X != enemy1X || lastEnemy1Y != enemy1Y ||(!enemy1Up && !enemy1Down && !enemy1Left && !enemy1Right)) {	
+		
+			var newDirectionFound = false;
+			
+			while(!newDirectionFound) {
+			
+				var random1Direction = Math.floor(Math.random() * Math.floor(4));
+
+				if(random1Direction == 0 && labyrinth[en1Y-1][en1X] == 0) {
+					enemy1Up = true;
+					enemy1Down = false;
+					enemy1Left = false;
+					enemy1Right = false;
+					
+					newDirectionFound = true;
+				} else if(random1Direction == 1 && labyrinth[en1Y+1][en1X] == 0) {
+					enemy1Up = false;
+					enemy1Down = true;
+					enemy1Left = false;
+					enemy1Right = false;
+					
+					newDirectionFound = true;
+				} else if(random1Direction == 2 && labyrinth[en1Y][en1X-1] == 0) {
+					enemy1Up = false;
+					enemy1Down = false;
+					enemy1Left = true;
+					enemy1Right = false;
+					
+					newDirectionFound = true;
+				} else if(random1Direction == 3 && labyrinth[en1Y][en1X+1] == 0) {
+					enemy1Up = false;
+					enemy1Down = false;
+					enemy1Left = false;
+					enemy1Right = true;
+					
+					newDirectionFound = true;
+				}
+			}
+		}
+		
+		if(enemy1Up) {
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0.1, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0.1, 0, 0]);
+		} else if(enemy1Down) {
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [-0.1, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [-0.1, 0, 0]);
+		} else if(enemy1Left) {
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, -0.1]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, -0.1]);
+		} else if(enemy1Right) {
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, 0.1]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, 0.1]);
+		}
+		
+		lastEnemy1X = enemy1X;
+		lastEnemy1Y = enemy1Y;
+		
+		/*
+		enemy2X = parseInt((enemyHalfSphereTranslationMatrices[1][14] + 16)/2);
+		enemy2Y = parseInt(-(enemyHalfSphereTranslationMatrices[1][12] - 18)/2);
+		
+		en2X = parseInt((enemyHalfSphereTranslationMatrices[1][14] + 16)/2 - 0.5);
+		en2Y = parseInt(-(enemyHalfSphereTranslationMatrices[1][12] - 18)/2 - 0.5);
+		
+		var random2Direction = Math.floor(Math.random() * Math.floor(4));
+		if(random2Direction == 0) {
+			enemy2Up = true;
+			enemy2Down = false;
+			enemy2Left = false;
+			enemy1Right = false;
+		} else if(random2Direction == 1) {
+			enemy2Up = false;
+			enemy2Down = true;
+			enemy2Left = false;
+			enemy2Right = false;
+		} else if(random2Direction == 2) {
+			enemy2Up = false;
+			enemy2Down = false;
+			enemy2Left = true;
+			enemy2Right = false;
+		} else if(random2Direction == 3) {
+			enemy2Up = false;
+			enemy2Down = false;
+			enemy2Left = false;
+			enemy2Right = true;
+		}
+		*/
+		
+	
 		for(var i = 0; i < 2; i++) {
 		
 			//Draw cylinder for enemy
@@ -987,6 +1100,8 @@ function main() {
 
 			gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
 				
+				
+			
 		}
 				
 		requestAnimationFrame(loop);
