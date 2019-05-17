@@ -550,6 +550,13 @@ function main() {
 	var en1X;
 	var en1Y;
 		
+	var lastEnemy2X;
+	var lastEnemy2Y;
+	var enemy2X;
+	var enemy2Y;
+	var en2X;
+	var en2Y;
+		
 	var loop = function () {
 	
 		playerX = parseInt((halfSphereTranslationMatrices[0][14] + 16)/2);
@@ -909,37 +916,70 @@ function main() {
 		
 		en1X = parseInt((enemyHalfSphereTranslationMatrices[0][14] + 16)/2 - 0.5);
 		en1Y = parseInt(-(enemyHalfSphereTranslationMatrices[0][12] - 18)/2 - 0.5);
-				
-		if(lastEnemy1X != enemy1X || lastEnemy1Y != enemy1Y ||(!enemy1Up && !enemy1Down && !enemy1Left && !enemy1Right)) {	
+		
+		var changeDirection = false;
+		
+		if(enemy1Up && labyrinth[en1Y-1][en1X] == 1) {
+			changeDirection = true;
+		}
+		if(enemy1Down && labyrinth[en1Y+1][en1X] == 1) {
+			changeDirection = true;
+		}
+		if(enemy1Left && labyrinth[en1Y][en1X-1] == 1) {
+			changeDirection = true;
+		}
+		if(enemy1Right && labyrinth[en1Y][en1X+1] == 1) {
+			changeDirection = true;
+		}
+		
+		var numberOfPossibleDirections = 0
+		
+		if(labyrinth[en1Y-1][en1X] == 0) {
+			numberOfPossibleDirections++;
+		}
+		if(labyrinth[en1Y+1][en1X] == 0) {
+			numberOfPossibleDirections++;
+		}
+		if(labyrinth[en1Y][en1X-1] == 0) {
+			numberOfPossibleDirections++;
+		}
+		if(labyrinth[en1Y][en1X+1] == 0) {
+			numberOfPossibleDirections++;
+		}
+		if(numberOfPossibleDirections >= 3) {
+				changeDirection = true;
+		}
+			
+		if(changeDirection && (lastEnemy1X != enemy1X || lastEnemy1Y != enemy1Y)) {	
 		
 			var newDirectionFound = false;
 			
 			while(!newDirectionFound) {
 			
-				var random1Direction = Math.floor(Math.random() * Math.floor(4));
+				var randomDirection = Math.floor(Math.random() * Math.floor(4));
 
-				if(random1Direction == 0 && labyrinth[en1Y-1][en1X] == 0) {
+				if(randomDirection == 0 && labyrinth[en1Y-1][en1X] == 0) {
 					enemy1Up = true;
 					enemy1Down = false;
 					enemy1Left = false;
 					enemy1Right = false;
 					
 					newDirectionFound = true;
-				} else if(random1Direction == 1 && labyrinth[en1Y+1][en1X] == 0) {
+				} else if(randomDirection == 1 && labyrinth[en1Y+1][en1X] == 0) {
 					enemy1Up = false;
 					enemy1Down = true;
 					enemy1Left = false;
 					enemy1Right = false;
 					
 					newDirectionFound = true;
-				} else if(random1Direction == 2 && labyrinth[en1Y][en1X-1] == 0) {
+				} else if(randomDirection == 2 && labyrinth[en1Y][en1X-1] == 0) {
 					enemy1Up = false;
 					enemy1Down = false;
 					enemy1Left = true;
 					enemy1Right = false;
 					
 					newDirectionFound = true;
-				} else if(random1Direction == 3 && labyrinth[en1Y][en1X+1] == 0) {
+				} else if(randomDirection == 3 && labyrinth[en1Y][en1X+1] == 0) {
 					enemy1Up = false;
 					enemy1Down = false;
 					enemy1Left = false;
@@ -951,53 +991,122 @@ function main() {
 		}
 		
 		if(enemy1Up) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0.1, 0, 0]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0.1, 0, 0]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0.2, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0.2, 0, 0]);
 		} else if(enemy1Down) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [-0.1, 0, 0]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [-0.1, 0, 0]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [-0.2, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [-0.2, 0, 0]);
 		} else if(enemy1Left) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, -0.1]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, -0.1]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, -0.2]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, -0.2]);
 		} else if(enemy1Right) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, 0.1]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, 0.1]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, 0.2]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, 0.2]);
 		}
 		
 		lastEnemy1X = enemy1X;
 		lastEnemy1Y = enemy1Y;
 		
-		/*
+		
+		
+		
+		
+		
 		enemy2X = parseInt((enemyHalfSphereTranslationMatrices[1][14] + 16)/2);
 		enemy2Y = parseInt(-(enemyHalfSphereTranslationMatrices[1][12] - 18)/2);
 		
 		en2X = parseInt((enemyHalfSphereTranslationMatrices[1][14] + 16)/2 - 0.5);
 		en2Y = parseInt(-(enemyHalfSphereTranslationMatrices[1][12] - 18)/2 - 0.5);
 		
-		var random2Direction = Math.floor(Math.random() * Math.floor(4));
-		if(random2Direction == 0) {
-			enemy2Up = true;
-			enemy2Down = false;
-			enemy2Left = false;
-			enemy1Right = false;
-		} else if(random2Direction == 1) {
-			enemy2Up = false;
-			enemy2Down = true;
-			enemy2Left = false;
-			enemy2Right = false;
-		} else if(random2Direction == 2) {
-			enemy2Up = false;
-			enemy2Down = false;
-			enemy2Left = true;
-			enemy2Right = false;
-		} else if(random2Direction == 3) {
-			enemy2Up = false;
-			enemy2Down = false;
-			enemy2Left = false;
-			enemy2Right = true;
-		}
-		*/
+		var changeDirection = false;
 		
+		if(enemy2Up && labyrinth[en2Y-1][en2X] == 1) {
+			changeDirection = true;
+		}
+		if(enemy2Down && labyrinth[en2Y+1][en2X] == 1) {
+			changeDirection = true;
+		}
+		if(enemy2Left && labyrinth[en2Y][en2X-1] == 1) {
+			changeDirection = true;
+		}
+		if(enemy2Right && labyrinth[en2Y][en2X+1] == 1) {
+			changeDirection = true;
+		}
+		
+		var numberOfPossibleDirections = 0
+		
+		if(labyrinth[en2Y-1][en2X] == 0) {
+			numberOfPossibleDirections++;
+		}
+		if(labyrinth[en2Y+1][en2X] == 0) {
+			numberOfPossibleDirections++;
+		}
+		if(labyrinth[en2Y][en2X-1] == 0) {
+			numberOfPossibleDirections++;
+		}
+		if(labyrinth[en2Y][en2X+1] == 0) {
+			numberOfPossibleDirections++;
+		}
+		if(numberOfPossibleDirections >= 3) {
+				changeDirection = true;
+		}
+			
+		if(changeDirection && (lastEnemy2X != enemy2X || lastEnemy2Y != enemy2Y)) {	
+		
+			var newDirectionFound = false;
+			
+			while(!newDirectionFound) {
+			
+				var randomDirection = Math.floor(Math.random() * Math.floor(4));
+
+				if(randomDirection == 0 && labyrinth[en2Y-1][en2X] == 0) {
+					enemy2Up = true;
+					enemy2Down = false;
+					enemy2Left = false;
+					enemy2Right = false;
+					
+					newDirectionFound = true;
+				} else if(randomDirection == 1 && labyrinth[en2Y+1][en2X] == 0) {
+					enemy2Up = false;
+					enemy2Down = true;
+					enemy2Left = false;
+					enemy2Right = false;
+					
+					newDirectionFound = true;
+				} else if(randomDirection == 2 && labyrinth[en2Y][en2X-1] == 0) {
+					enemy2Up = false;
+					enemy2Down = false;
+					enemy2Left = true;
+					enemy2Right = false;
+					
+					newDirectionFound = true;
+				} else if(randomDirection == 3 && labyrinth[en2Y][en2X+1] == 0) {
+					enemy2Up = false;
+					enemy2Down = false;
+					enemy2Left = false;
+					enemy2Right = true;
+					
+					newDirectionFound = true;
+				}
+			}
+		}
+		
+		if(enemy2Up) {
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [0.2, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [0.2, 0, 0]);
+		} else if(enemy2Down) {
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [-0.2, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [-0.2, 0, 0]);
+		} else if(enemy2Left) {
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [0, 0, -0.2]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [0, 0, -0.2]);
+		} else if(enemy2Right) {
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [0, 0, 0.2]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [0, 0, 0.2]);
+		}
+		
+		lastEnemy2X = enemy2X;
+		lastEnemy2Y = enemy2Y;
 	
 		for(var i = 0; i < 2; i++) {
 		
@@ -1075,8 +1184,7 @@ function main() {
 
 			gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
 			
-			
-			
+
 			//Draw right eye for enemy
 			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
