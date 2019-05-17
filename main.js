@@ -27,6 +27,7 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
+	var pointCounter = 0;
 	
 	var enemyHalfSphereRotationMatrix = new Float32Array(16);
 	enemyHalfSphereRotationMatrix = identityMatrix.slice();
@@ -858,8 +859,10 @@ function main() {
 			}
 		}
 
-		if(!jumping) {
+		if(!jumping && dotArray[plY][plX] == 0) {
 			dotArray[plY][plX] = 1;
+			pointCounter++;
+			document.getElementById("pointCounter").innerHTML = pointCounter;
 		}
 		
 		var allDotsEaten = true;
