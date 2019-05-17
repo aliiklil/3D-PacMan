@@ -429,10 +429,7 @@ function main() {
 			}
 		}
 	}
-	
 
-
-	
 	
 	var dotArray  = labyrinth.map(inner => inner.slice());
 	
@@ -442,27 +439,23 @@ function main() {
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
-
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
 
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
 		1.0, 1.0, 0.0,
@@ -487,17 +480,7 @@ function main() {
 			}
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	var halfSphereVertices = [];
 	var halfSphereNormals = [];
@@ -633,22 +616,13 @@ function main() {
 		
 		plX = parseInt((halfSphereTranslationMatrices[0][14] + 16)/2 - 0.5);
 		plY = parseInt(-(halfSphereTranslationMatrices[0][12] - 18)/2 - 0.5);
-		
-		//console.log("playerX= " + playerX)
-		//console.log("playerY= " + playerY)
-		
-		//console.log("plX= " + plX)
-		//console.log("plY= " + plY)
-		
-
-		
+				
 		if(lastPlayerX != playerX || lastPlayerY != playerY || (!up && !down && !left && !right)) {	
 			if(pressedUp && labyrinth[plY-1][plX] == 0) {
 				up = true;
 				down = false;	
 				left = false;
 				right = false;
-				
 				wholePlayerRotationMatrix = identityMatrix.slice();
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(180), [0, 1, 0]);
 			}
@@ -657,7 +631,6 @@ function main() {
 				down = true;	
 				left = false;
 				right = false;
-				
 				wholePlayerRotationMatrix = identityMatrix.slice();
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(0), [0, 1, 0]);
 				
@@ -667,7 +640,6 @@ function main() {
 				down = false;	
 				left = true;
 				right = false;
-				
 				wholePlayerRotationMatrix = identityMatrix.slice();
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(270), [0, 1, 0]);
 				
@@ -677,11 +649,9 @@ function main() {
 				down = false;	
 				left = false;
 				right = true;
-				
 				wholePlayerRotationMatrix = identityMatrix.slice();
 				glMatrix.mat4.rotate(wholePlayerRotationMatrix, wholePlayerRotationMatrix, glMatrix.glMatrix.toRadian(90), [0, 1, 0]);
 			}
-
 		}
 
 		
@@ -689,15 +659,12 @@ function main() {
 			if(up && labyrinth[plY-1][plX] == 1) {
 				up = false;
 			}
-
 			if(down && labyrinth[plY+1][plX] == 1) {
 				down = false;
 			}
-
 			if(left && labyrinth[plY][plX-1] == 1) {
 				left = false;
 			}
-
 			if(right && labyrinth[plY][plX+1] == 1) {
 				right = false;
 			}
@@ -723,8 +690,12 @@ function main() {
 		var lightPositionUniformLocation = gl.getUniformLocation(program, 'lightPosition');
 		var cameraPositionUniformLocation = gl.getUniformLocation(program, 'cameraPosition');
 		
-		
-		
+		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+		gl.uniform3fv(specularColorUniformLocation, specularColor);
+		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+
 		//Draw ground plane
 		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
@@ -732,11 +703,7 @@ function main() {
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, groundPlaneRotationMatrix);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, groundPlaneTranslationMatrix);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-		gl.uniform3fv(specularColorUniformLocation, specularColor);
-		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneVertices), gl.STATIC_DRAW);
@@ -763,11 +730,6 @@ function main() {
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-		gl.uniform3fv(specularColorUniformLocation, specularColor);
-		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(leftEyeVertices), gl.STATIC_DRAW);
@@ -795,11 +757,6 @@ function main() {
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-		gl.uniform3fv(specularColorUniformLocation, specularColor);
-		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rightEyeVertices), gl.STATIC_DRAW);
@@ -818,12 +775,6 @@ function main() {
 
 		gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
 		
-		
-		
-		
-		
-		
-		
 		mouthOpeningCounter++;
 		
 		if(mouthOpeningCounter == 10) {
@@ -835,39 +786,32 @@ function main() {
 			}
 		}
 		
-		
 		if (mouthOpening) {
 			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], -0.1, [0, 1, 0]);
 		} else {		
 			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], 0.1, [0, 1, 0]);
 		}
 		
-
 		if (up) {
-		
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.5, 0, 0]);				
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.5, 0, 0]);	
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.5, 0, 0]);
 		}
-
 		if (down) {
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.5, 0, 0]);				
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.5, 0, 0]);	
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.5, 0, 0]);
 		}
-
 		if (left) {
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.5]);
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.5]);
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.5]);
 		}
-
 		if (right) {
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.5]);
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.5]);
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.5]);
 		}
-		
 		
 		//Draw halfSpheres
 		for(var i = 0; i < 2; i++) {
@@ -877,11 +821,6 @@ function main() {
 			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[i]);
 			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[i]);
 			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-			gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-			gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-			gl.uniform3fv(specularColorUniformLocation, specularColor);
-			gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-			gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 					
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereVertices), gl.STATIC_DRAW);
@@ -914,11 +853,6 @@ function main() {
 					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, cubeTranslationMatrices[i][j]);
 					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-					gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-					gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-					gl.uniform3fv(specularColorUniformLocation, specularColor);
-					gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-					gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 							
 					gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
@@ -956,11 +890,6 @@ function main() {
 					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, dotTranslationMatrices[i][j]);
 					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, dotScalingMatrix);
-					gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-					gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-					gl.uniform3fv(specularColorUniformLocation, specularColor);
-					gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-					gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 							
 					gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
@@ -1000,7 +929,6 @@ function main() {
 
 		
 		if(allDotsEaten) {
-		
 			dotArray  = labyrinth.map(inner => inner.slice());
 			
 			halfSphereTranslationMatrices[0] = identityMatrix.slice();
@@ -1051,11 +979,6 @@ function main() {
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, identityMatrix);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-		gl.uniform3fv(specularColorUniformLocation, specularColor);
-		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 				
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderVertices), gl.STATIC_DRAW);
@@ -1082,11 +1005,6 @@ function main() {
 		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
 		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, identityMatrix);
 		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-		gl.uniform3fv(specularColorUniformLocation, specularColor);
-		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 				
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereVertices), gl.STATIC_DRAW);
