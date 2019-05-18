@@ -1,6 +1,9 @@
 function main() {
 	
-	var pointCollectingSound = document.getElementById("pointCollectingSound");
+	var pointSound = document.getElementById("pointSound");
+	var loseSound = document.getElementById("loseSound");
+	var winSound = document.getElementById("winSound");
+	var jumpSound = document.getElementById("jumpSound");
 	
 	var canvas = document.getElementById('canvas');
 	var gl = canvas.getContext('webgl');
@@ -536,6 +539,8 @@ function main() {
 	var plX;
 	var plY;
 	
+	var playerSpeed = 0.4;
+	
 	var playerStanding = false;
 	
 	var up = false;
@@ -742,24 +747,24 @@ function main() {
 		}
 		
 		if (up) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.2, 0, 0]);				
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.2, 0, 0]);	
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.2, 0, 0]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [playerSpeed, 0, 0]);				
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [playerSpeed, 0, 0]);	
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-playerSpeed, 0, 0]);
 		}
 		if (down) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.2, 0, 0]);				
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.2, 0, 0]);	
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.2, 0, 0]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-playerSpeed, 0, 0]);				
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-playerSpeed, 0, 0]);	
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [playerSpeed, 0, 0]);
 		}
 		if (left) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.2]);
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.2]);
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.2]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -playerSpeed]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -playerSpeed]);
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, playerSpeed]);
 		}
 		if (right) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.2]);
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.2]);
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.2]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, playerSpeed]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, playerSpeed]);
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -playerSpeed]);
 		}
 		
 		//Draw halfSpheres
@@ -860,8 +865,8 @@ function main() {
 			dotArray[plY][plX] = 1;
 			pointCounter++;
 			document.getElementById("pointCounter").innerHTML = pointCounter;
-			pointCollectingSound.playbackRate=2;
-			pointCollectingSound.play();
+			pointSound.playbackRate=10;
+			pointSound.play();
 		}
 		
 		var allDotsEaten = true;
@@ -916,6 +921,8 @@ function main() {
 			
 			pointCounter = 0;
 			document.getElementById("pointCounter").innerHTML = pointCounter;
+			
+			winSound.play();
 		}
 		
 		
@@ -1296,6 +1303,8 @@ function main() {
 			
 			pointCounter = 0;
 			document.getElementById("pointCounter").innerHTML = pointCounter;
+			
+			loseSound.play();
 		}
 				
 		requestAnimationFrame(loop);
@@ -1380,6 +1389,7 @@ function main() {
 			if (key.keyCode == "32" && !jumping) { //Space bar
 				jumping = true;
 				jumpingUp = true;
+				jumpSound.play();
 			}
 			
 		}
