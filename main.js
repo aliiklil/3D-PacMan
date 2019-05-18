@@ -4,6 +4,9 @@ function main() {
 	var loseSound = document.getElementById("loseSound");
 	var winSound = document.getElementById("winSound");
 	var jumpSound = document.getElementById("jumpSound");
+	var backgroundMusic = document.getElementById("background_music");
+
+	var backgroundMusicStarted = false;
 	
 	var canvas = document.getElementById('canvas');
 	var gl = canvas.getContext('webgl');
@@ -865,7 +868,7 @@ function main() {
 			dotArray[plY][plX] = 1;
 			pointCounter++;
 			document.getElementById("pointCounter").innerHTML = pointCounter;
-			pointSound.playbackRate=10;
+			pointSound.playbackRate=7;
 			pointSound.play();
 		}
 		
@@ -921,6 +924,10 @@ function main() {
 			
 			pointCounter = 0;
 			document.getElementById("pointCounter").innerHTML = pointCounter;
+			
+			backgroundMusicStarted = false;
+			backgroundMusic.currentTime = 0;
+			backgroundMusic.pause();
 			
 			winSound.play();
 		}
@@ -1304,6 +1311,10 @@ function main() {
 			pointCounter = 0;
 			document.getElementById("pointCounter").innerHTML = pointCounter;
 			
+			backgroundMusicStarted = false;
+			backgroundMusic.currentTime = 0;
+			backgroundMusic.pause();
+			
 			loseSound.play();
 		}
 				
@@ -1390,6 +1401,12 @@ function main() {
 				jumping = true;
 				jumpingUp = true;
 				jumpSound.play();
+			}
+
+			if (key.keyCode == "38" || key.keyCode == "40" || key.keyCode == "37" || key.keyCode == "37" || key.keyCode == "39" || key.keyCode == "32" || !backgroundMusicStarted) { 
+				backgroundMusicStarted = true;
+				backgroundMusic.volume = 0.5;
+				backgroundMusic.play();
 			}
 			
 		}
