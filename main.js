@@ -1,4 +1,11 @@
+window.onload = function() {
+  var context = new AudioContext();
+
+}
+
 function main() {
+	
+	var sound = document.getElementById("sound");
 	
 	var canvas = document.getElementById('canvas');
 	var gl = canvas.getContext('webgl');
@@ -64,7 +71,7 @@ function main() {
 	var enemy2Down = false;
 	var enemy2Left = false;
 	var enemy2Right = false;
-	
+
 	var cylinderVertices = [
 		0, 0, 0,
 		1, 0, 0,
@@ -437,8 +444,6 @@ function main() {
 	var halfSphereIndices = [];
 	
 	var latLongCount = 5; // Count of latitudes and longitudes
-
-	var size = 1;
 	
 	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the halfSphere
 		for (var j = 0; j <= latLongCount; j++) {
@@ -446,9 +451,9 @@ function main() {
 			var theta = i * Math.PI / latLongCount;
 			var phi = j * 2 * Math.PI/2 / latLongCount;
 
-			halfSphereVertices.push(Math.sin(theta) * Math.cos(phi)*size);
-			halfSphereVertices.push(Math.cos(theta) * Math.cos(phi)*size);
-			halfSphereVertices.push(Math.sin(phi)*size);
+			halfSphereVertices.push(Math.sin(theta) * Math.cos(phi));
+			halfSphereVertices.push(Math.cos(theta) * Math.cos(phi));
+			halfSphereVertices.push(Math.sin(phi));
 			
 			halfSphereColors.push(1, 1, 0);
 			
@@ -467,14 +472,6 @@ function main() {
 	halfSphereVertices.push(0, 0, 0);
 	halfSphereColors.push(0, 0, 0);
 
-	for (var i = 0; i <= latLongCount; i++) {
-		for (var j = 0; j <= latLongCount; j++) {
-			halfSphereIndices.push(halfSphereVertices.length);
-			halfSphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
-			halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
-		}
-	}
-	
 	halfSphereNormals = halfSphereVertices.slice(); // The normals and the vertices are the same for the halfSphere
 
 	var ambientColor = [0.5, 0.5, 0.5];
@@ -750,24 +747,24 @@ function main() {
 		}
 		
 		if (up) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.5, 0, 0]);				
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.5, 0, 0]);	
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.5, 0, 0]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0.2, 0, 0]);				
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0.2, 0, 0]);	
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.2, 0, 0]);
 		}
 		if (down) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.5, 0, 0]);				
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.5, 0, 0]);	
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.5, 0, 0]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [-0.2, 0, 0]);				
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [-0.2, 0, 0]);	
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.2, 0, 0]);
 		}
 		if (left) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.5]);
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.5]);
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.5]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, -0.2]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, -0.2]);
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.2]);
 		}
 		if (right) {
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.5]);
-			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.5]);
-			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.5]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 0, 0.2]);
+			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 0, 0.2]);
+			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.2]);
 		}
 		
 		//Draw halfSpheres
@@ -868,6 +865,8 @@ function main() {
 			dotArray[plY][plX] = 1;
 			pointCounter++;
 			document.getElementById("pointCounter").innerHTML = pointCounter;
+			sound.playbackRate=2;
+			sound.play();
 		}
 		
 		var allDotsEaten = true;
