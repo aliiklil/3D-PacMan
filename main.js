@@ -1,11 +1,6 @@
-window.onload = function() {
-  var context = new AudioContext();
-
-}
-
 function main() {
 	
-	var sound = document.getElementById("sound");
+	var pointCollectingSound = document.getElementById("pointCollectingSound");
 	
 	var canvas = document.getElementById('canvas');
 	var gl = canvas.getContext('webgl');
@@ -865,8 +860,8 @@ function main() {
 			dotArray[plY][plX] = 1;
 			pointCounter++;
 			document.getElementById("pointCounter").innerHTML = pointCounter;
-			sound.playbackRate=2;
-			sound.play();
+			pointCollectingSound.playbackRate=2;
+			pointCollectingSound.play();
 		}
 		
 		var allDotsEaten = true;
