@@ -539,9 +539,7 @@ function main() {
 	var playerY;
 	var plX;
 	var plY;
-	
-	var playerSpeed = 0.4;
-	
+		
 	var playerStanding = false;
 	
 	var up = false;
@@ -567,16 +565,30 @@ function main() {
 	var enemy2Y;
 	var en2X;
 	var en2Y;
+	
+	var then = new Date().getTime();
+	var now;
+	var delta;
 		
 	var loop = function () {
-	
+
+		now = new Date().getTime();
+		var delta = now - then;
+		then = now;
+		
+		playerSpeed = delta/100;
+		enemySpeed = delta/150;
+		jumpingSpeed = delta/50;
+		
+		console.log(delta);
+		
 		playerX = parseInt((halfSphereTranslationMatrices[0][14] + 16)/2);
 		playerY = parseInt(-(halfSphereTranslationMatrices[0][12] - 18)/2);
 		
 		plX = parseInt((halfSphereTranslationMatrices[0][14] + 16)/2 - 0.5);
 		plY = parseInt(-(halfSphereTranslationMatrices[0][12] - 18)/2 - 0.5);
 				
-		if(lastPlayerX != playerX || lastPlayerY != playerY || (!up && !down && !left && !right)) {	
+		if(lastPlayerX != playerX || lastPlayerY != playerY || (!up && !down && !left && !right && !jumping)) {	
 			if(pressedUp && labyrinth[plY-1][plX] == 0) {
 				up = true;
 				down = false;	
@@ -937,11 +949,11 @@ function main() {
 			jumpingProgress = jumpingProgress + Math.PI/10;
 			
 			if(jumpingUp) {		
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, Math.sin(jumpingProgress)*0.75, 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, Math.sin(jumpingProgress)*0.75, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, Math.sin(jumpingProgress)*jumpingSpeed, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, Math.sin(jumpingProgress)*jumpingSpeed, 0]);
 			} else if (jumpingDown) {
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -Math.sin(jumpingProgress)*0.75, 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -Math.sin(jumpingProgress)*0.75, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -Math.sin(jumpingProgress)*jumpingSpeed, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -Math.sin(jumpingProgress)*jumpingSpeed, 0]);
 			}
 			
 			if(jumpingUp && jumpingProgress == Math.PI) {
@@ -1045,17 +1057,17 @@ function main() {
 		}
 		
 		if(enemy1Up) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0.2, 0, 0]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0.2, 0, 0]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [enemySpeed, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [enemySpeed, 0, 0]);
 		} else if(enemy1Down) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [-0.2, 0, 0]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [-0.2, 0, 0]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [-enemySpeed, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [-enemySpeed, 0, 0]);
 		} else if(enemy1Left) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, -0.2]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, -0.2]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, -enemySpeed]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, -enemySpeed]);
 		} else if(enemy1Right) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, 0.2]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, 0.2]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[0], enemyHalfSphereTranslationMatrices[0], [0, 0, enemySpeed]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[0], enemyCylinderTranslationMatrices[0], [0, 0, enemySpeed]);
 		}
 		
 		lastEnemy1X = enemy1X;
@@ -1150,17 +1162,17 @@ function main() {
 		}
 		
 		if(enemy2Up) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [0.2, 0, 0]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [0.2, 0, 0]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [enemySpeed, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [enemySpeed, 0, 0]);
 		} else if(enemy2Down) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [-0.2, 0, 0]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [-0.2, 0, 0]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [-enemySpeed, 0, 0]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [-enemySpeed, 0, 0]);
 		} else if(enemy2Left) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [0, 0, -0.2]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [0, 0, -0.2]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [0, 0, -enemySpeed]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [0, 0, -enemySpeed]);
 		} else if(enemy2Right) {
-			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [0, 0, 0.2]);
-			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [0, 0, 0.2]);
+			glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [0, 0, enemySpeed]);
+			glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [0, 0, enemySpeed]);
 		}
 		
 		lastEnemy2X = enemy2X;
@@ -1315,7 +1327,7 @@ function main() {
 			
 			loseSound.play();
 		}
-				
+			
 		requestAnimationFrame(loop);
 	};
 	requestAnimationFrame(loop);
