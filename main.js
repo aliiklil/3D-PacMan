@@ -72,6 +72,35 @@ function main() {
 	var enemy2Down = false;
 	var enemy2Left = false;
 	var enemy2Right = false;
+	
+	const squareVertices =
+	[
+		1.0, 0.0, 1.0,   
+		1.0, 0.0, -1.0,  
+		-1.0, 0.0, -1.0,   
+		-1.0, 0.0, 1.0 
+	];
+	
+	const squareNormals = 	[
+		0.0, 1.0, 0.0,   
+		0.0, 1.0, 0.0,  
+		0.0, 1.0, 0.0,   
+		0.0, 1.0, 0.0 
+	];
+					
+	const squareColors = 
+	[
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0
+	];
+	
+	const squareIndices =
+	[
+		0, 1, 2,
+		0, 2, 3
+	];
 
 	var cylinderVertices = [
 		0, 0, 0,
@@ -854,21 +883,21 @@ function main() {
 					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, dotScalingMatrix);
 							
 					gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareVertices), gl.STATIC_DRAW);
 					gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 					
 					gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeNormals), gl.STATIC_DRAW);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareNormals), gl.STATIC_DRAW);
 					gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 					
 					gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(dotColors), gl.STATIC_DRAW);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareColors), gl.STATIC_DRAW);
 					gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
 					
 					gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-					gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeIndices), gl.STATIC_DRAW);
+					gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(squareIndices), gl.STATIC_DRAW);
 					
-					gl.drawElements(gl.TRIANGLES, cubeIndices.length, gl.UNSIGNED_SHORT, 0);
+					gl.drawElements(gl.TRIANGLES, squareIndices.length, gl.UNSIGNED_SHORT, 0);
 					
 				}
 			}
