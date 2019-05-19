@@ -527,8 +527,6 @@ function main() {
 	var colorBuffer = gl.createBuffer();
 	var indexBuffer = gl.createBuffer();
 	
-	var cameraSelected = false;
-	
 	var mouthOpeningCounter = 0;
 	var mouthOpening = true;
 	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(45), [0, 1, 0]);
@@ -1322,93 +1320,51 @@ function main() {
 	};
 	requestAnimationFrame(loop);
 	
-	
-	document.onkeydown = function(event) {
-		var key_press = String.fromCharCode(event.keyCode);
-		
-		if(event.keyCode == 67) {
-			if(cameraSelected)
-				cameraSelected = false;
-			else
-				cameraSelected = true;
-		}
-		
-	}
 		
 	window.addEventListener("keydown", checkKeyPress, false);
 	
 	function checkKeyPress(key) {
 
-		if(cameraSelected) {
-			if (key.keyCode == "39") { //Arrow right
-					glMatrix.mat4.translate(viewMatrix, viewMatrix, [-0.1, 0, 0]);
-					cameraPosition = [cameraPosition[0] + 0.1, cameraPosition[1], cameraPosition[2]];
-				}
-				if (key.keyCode == "37") { //Arrow left
-					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0.1, 0, 0]);
-					cameraPosition = [cameraPosition[0] - 0.1, cameraPosition[1], cameraPosition[2]];
-				}
-				if (key.keyCode == "38") { //Arrow up
-					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, -0.1, 0]);
-					cameraPosition = [cameraPosition[0], cameraPosition[1] + 0.1, cameraPosition[2]];
-				}
-				if (key.keyCode == "40") { //Arrow down
-					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0.1, 0]);
-					cameraPosition = [cameraPosition[0], cameraPosition[1] - 0.1, cameraPosition[2]];
-				}
-				if (key.keyCode == "188") { //Comma
-					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -0.1]);
-					cameraPosition = [cameraPosition[0], cameraPosition[1], cameraPosition[2] + 0.1];
-				}
-				if (key.keyCode == "190") { //Point
-					glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, 0.1]);
-					cameraPosition = [cameraPosition[0], cameraPosition[1], cameraPosition[2] - 0.1];
-				}
+		if (key.keyCode == "38" && !jumping) { //Arrow up
+			pressedUp = true;
+			pressedDown = false;
+			pressedLeft = false;
+			pressedRight = false;
+		}
+		
+		if (key.keyCode == "40" && !jumping) { //Arrow down
+			pressedUp = false;
+			pressedDown = true;
+			pressedLeft = false;
+			pressedRight = false;
 		}
 	
-		if(!cameraSelected) {
-		
-			if (key.keyCode == "38" && !jumping) { //Arrow up
-				pressedUp = true;
-				pressedDown = false;
-				pressedLeft = false;
-				pressedRight = false;
-			}
-			
-			if (key.keyCode == "40" && !jumping) { //Arrow down
-				pressedUp = false;
-				pressedDown = true;
-				pressedLeft = false;
-				pressedRight = false;
-			}
-		
-			if (key.keyCode == "37" && !jumping) { //Arrow left
+		if (key.keyCode == "37" && !jumping) { //Arrow left
 
-				pressedUp = false;
-				pressedDown = false;
-				pressedLeft = true;
-				pressedRight = false;
-			}
-		
-			if (key.keyCode == "39" && !jumping) { //Arrow right
-				pressedUp = false;
-				pressedDown = false;
-				pressedLeft = false;
-				pressedRight = true;
-			}
-		
-			if (key.keyCode == "32" && !jumping) { //Space bar
-				jumping = true;
-				jumpingUp = true;
-				jumpSound.play();
-			}
-
-			if (key.keyCode == "38" || key.keyCode == "40" || key.keyCode == "37" || key.keyCode == "37" || key.keyCode == "39" || key.keyCode == "32" || !backgroundMusicStarted) { 
-				backgroundMusicStarted = true;
-				backgroundMusic.volume = 0.5;
-				backgroundMusic.play();
-			}
-			
+			pressedUp = false;
+			pressedDown = false;
+			pressedLeft = true;
+			pressedRight = false;
 		}
+	
+		if (key.keyCode == "39" && !jumping) { //Arrow right
+			pressedUp = false;
+			pressedDown = false;
+			pressedLeft = false;
+			pressedRight = true;
+		}
+	
+		if (key.keyCode == "32" && !jumping) { //Space bar
+			jumping = true;
+			jumpingUp = true;
+			jumpSound.play();
+		}
+
+		if (key.keyCode == "38" || key.keyCode == "40" || key.keyCode == "37" || key.keyCode == "37" || key.keyCode == "39" || key.keyCode == "32" || !backgroundMusicStarted) { 
+			backgroundMusicStarted = true;
+			backgroundMusic.volume = 0.5;
+			backgroundMusic.play();
+		}
+		
 	}
 };
