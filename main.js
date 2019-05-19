@@ -35,8 +35,64 @@ function main() {
 	var identityMatrix = new Float32Array(16);
 	glMatrix.mat4.identity(identityMatrix);
 	
-	var pointCounter = 0;
+
 	
+	//Half sphere for player and enemies
+	var halfSphereVertices = [];
+	var halfSphereNormals = [];
+	var halfSphereColors = [];
+	var halfSphereIndices = [];
+	
+	var latLongCount = 5; // Count of latitudes and longitudes
+	
+	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the halfSphere
+		for (var j = 0; j <= latLongCount; j++) {
+		
+			var theta = i * Math.PI / latLongCount;
+			var phi = j * 2 * Math.PI/2 / latLongCount;
+
+			halfSphereVertices.push(Math.sin(theta) * Math.cos(phi));
+			halfSphereVertices.push(Math.cos(theta) * Math.cos(phi));
+			halfSphereVertices.push(Math.sin(phi));
+			
+			halfSphereColors.push(1, 1, 0);
+			
+			if (i < latLongCount && j < latLongCount) {
+				halfSphereIndices.push(i * (latLongCount + 1) + j);
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
+				
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
+				halfSphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
+			}
+		}
+	}
+	
+	halfSphereVertices.push(0, 0, 0);
+	halfSphereColors.push(0, 0, 0);
+
+	halfSphereNormals = halfSphereVertices.slice(); // The normals and the vertices are the same for the halfSphere
+
+	var halfSphereRotationMatrices = [];
+	var halfSphereTranslationMatrices = [];
+	var wholePlayerRotationMatrix = identityMatrix.slice();
+	
+	for(var i = 0; i < 2; i++) {
+		halfSphereRotationMatrices.push(identityMatrix.slice());
+		halfSphereTranslationMatrices.push(identityMatrix.slice());
+	}
+	
+	glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 1, 0]);
+	glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 1, 0]);
+	
+	glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
+	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
+	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(45), [0, 1, 0]);
+	
+
+
+	//Enemies
 	var enemyHalfSphereRotationMatrix = new Float32Array(16);
 	enemyHalfSphereRotationMatrix = identityMatrix.slice();
 	glMatrix.mat4.rotate(enemyHalfSphereRotationMatrix, enemyHalfSphereRotationMatrix, glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
@@ -63,45 +119,9 @@ function main() {
 	glMatrix.mat4.translate(enemyCylinderTranslationMatrices[1], enemyCylinderTranslationMatrices[1], [enemy2StartX, 0, enemy2StartY]);
 	glMatrix.mat4.translate(enemyHalfSphereTranslationMatrices[1], enemyHalfSphereTranslationMatrices[1], [enemy2StartX, 1, enemy2StartY]);
 
-	var enemy1Up = false;
-	var enemy1Down = false;
-	var enemy1Left = false;
-	var enemy1Right = false;
-	
-	var enemy2Up = false;
-	var enemy2Down = false;
-	var enemy2Left = false;
-	var enemy2Right = false;
-	
-	const squareVertices =
-	[
-		1.0, 0.0, 1.0,   
-		1.0, 0.0, -1.0,  
-		-1.0, 0.0, -1.0,   
-		-1.0, 0.0, 1.0 
-	];
-	
-	const squareNormals = 	[
-		0.0, 1.0, 0.0,   
-		0.0, 1.0, 0.0,  
-		0.0, 1.0, 0.0,   
-		0.0, 1.0, 0.0 
-	];
-					
-	const squareColors = 
-	[
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0,
-		1.0, 1.0, 0.0
-	];
-	
-	const squareIndices =
-	[
-		0, 1, 2,
-		0, 2, 3
-	];
 
+	
+	//For the enemies
 	var cylinderVertices = [
 		0, 0, 0,
 		1, 0, 0,
@@ -224,11 +244,9 @@ function main() {
 	
 	var cylinderNormals = cylinderVertices.slice();
 	
-	var pressedUp = false;
-	var pressedDown = false;
-	var pressedLeft = false;
-	var pressedRight = false;
-			
+	
+	
+	//Eyes for player and enemies
 	var leftEyeVertices = [
 		-0.3500000238418579, 0.3999999761581421, 0.9000000953674316,
 		-0.20781731605529785, 0.4989203214645386, 0.9999942779541016,
@@ -269,7 +287,7 @@ function main() {
 		-0.4890866279602051, -0.16792821884155273, 0.8466715812683105
 	];
 		
-	var playerEyeIndices = [
+	var eyeIndices = [
 		0, 1, 2,
 		0, 2, 3,
 		0, 3, 4,
@@ -288,16 +306,19 @@ function main() {
 		0, 16, 1
 	];
 		
-	var playerEyeNormals = [];
-	for(var i = 0; i < playerEyeIndices.length; i++) {
-		playerEyeNormals.push(0, 1, 0);
+	var eyeNormals = [];
+	for(var i = 0; i < eyeIndices.length; i++) {
+		eyeNormals.push(0, 1, 0);
 	}
 	
-	var playerEyeColors = [];
+	var eyeColors = [];
 	for(var i = 0; i < leftEyeVertices.length; i++) {
-		playerEyeColors.push(0, 0, 0);
+		eyeColors.push(0, 0, 0);
 	}
 	
+	
+	
+	//Ground plane
 	var groundPlaneVertices = [
 		16, 0, 16,
 		16, 0, -16,
@@ -313,10 +334,10 @@ function main() {
 	];
 	
 	var groundPlaneColors = [
-		0.8, 0.8, 0.8,
-		0.8, 0.8, 0.8,
-		0.8, 0.8, 0.8,
-		0.8, 0.8, 0.8
+		0.5, 0.5, 0.8,
+		0.5, 0.5, 0.8,
+		0.5, 0.5, 0.8,
+		0.5, 0.5, 0.8
 	];
 	
 	var groundPlaneIndices = [
@@ -330,6 +351,9 @@ function main() {
 	glMatrix.mat4.identity(groundPlaneRotationMatrix);
 	glMatrix.mat4.identity(groundPlaneTranslationMatrix);
 
+	
+	
+	//Labyrinth
 	var labyrinth = [
 		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -349,7 +373,7 @@ function main() {
 		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 	];
 	
-	const cubeVertices =
+	var cubeVertices =
 	[
 		1.0, 1.0, 1.0,   
 		1.0, 1.0, -1.0,  
@@ -377,9 +401,9 @@ function main() {
 		1.0, -1.0, -1.0
 	];
 	
-	const cubeNormals = cubeVertices.slice();
+	var cubeNormals = cubeVertices.slice();
 					
-	const cubeColors = 
+	var cubeColors = 
 	[
 		0.0, 0.5, 0.9,
 		0.0, 0.5, 0.9,
@@ -407,7 +431,7 @@ function main() {
 		0.0, 0.0, 0.3
 	];
 	
-	const cubeIndices =
+	var cubeIndices =
 	[
 		0, 1, 2,
 		0, 2, 3,
@@ -441,6 +465,37 @@ function main() {
 	}
 
 	
+	
+	//Dots, which can be eaten by pacman
+	const squareVertices =
+	[
+		1.0, 0.0, 1.0,   
+		1.0, 0.0, -1.0,  
+		-1.0, 0.0, -1.0,   
+		-1.0, 0.0, 1.0 
+	];
+	
+	const squareNormals = 	[
+		0.0, 1.0, 0.0,   
+		0.0, 1.0, 0.0,  
+		0.0, 1.0, 0.0,   
+		0.0, 1.0, 0.0 
+	];
+					
+	const squareColors = 
+	[
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0
+	];
+	
+	const squareIndices =
+	[
+		0, 1, 2,
+		0, 2, 3
+	];
+	
 	var dotArray  = labyrinth.map(inner => inner.slice());
 	dotArray[8][7] = 1;
 	
@@ -468,42 +523,9 @@ function main() {
 		}
 	}
 	
-	var halfSphereVertices = [];
-	var halfSphereNormals = [];
-	var halfSphereColors = [];
-	var halfSphereIndices = [];
-	
-	var latLongCount = 5; // Count of latitudes and longitudes
-	
-	for (var i = 0; i <= latLongCount; i++) {	//Create vertices and the indices for the halfSphere
-		for (var j = 0; j <= latLongCount; j++) {
-		
-			var theta = i * Math.PI / latLongCount;
-			var phi = j * 2 * Math.PI/2 / latLongCount;
 
-			halfSphereVertices.push(Math.sin(theta) * Math.cos(phi));
-			halfSphereVertices.push(Math.cos(theta) * Math.cos(phi));
-			halfSphereVertices.push(Math.sin(phi));
-			
-			halfSphereColors.push(1, 1, 0);
-			
-			if (i < latLongCount && j < latLongCount) {
-				halfSphereIndices.push(i * (latLongCount + 1) + j);
-				halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
-				halfSphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
-				
-				halfSphereIndices.push(i * (latLongCount + 1) + j + 2 + latLongCount);
-				halfSphereIndices.push(i * (latLongCount + 1) + j + 1);
-				halfSphereIndices.push(i * (latLongCount + 1) + j + 1 + latLongCount);
-			}
-		}
-	}
-	
-	halfSphereVertices.push(0, 0, 0);
-	halfSphereColors.push(0, 0, 0);
 
-	halfSphereNormals = halfSphereVertices.slice(); // The normals and the vertices are the same for the halfSphere
-
+	//Light colors, shear view and orthographic projection
 	var ambientColor = [0.5, 0.5, 0.5];
 	var diffuseColor = [0.5, 0.5, 0.5];
 	var specularColor = [0.1, 0.1, 0.1];
@@ -511,28 +533,10 @@ function main() {
 	var lightPosition = [0, 20, -20];
 	var cameraPosition = [0, 15, 0];
 	
-	//Create uniform matrices
-	var globalRotationMatrix = new Float32Array(16);
-	glMatrix.mat4.identity(globalRotationMatrix);
-
-	var halfSphereRotationMatrices = [];
-	var halfSphereTranslationMatrices = [];
-	
-	for(var i = 0; i < 2; i++) {
-		halfSphereRotationMatrices.push(identityMatrix.slice());
-		halfSphereTranslationMatrices.push(identityMatrix.slice());
-	}
-	
-	glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, 1, 0]);
-	glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, 1, 0]);
-	glMatrix.mat4.rotate(halfSphereRotationMatrices[0], halfSphereRotationMatrices[0], glMatrix.glMatrix.toRadian(90), [1, 0, 0]);
-	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(-90), [1, 0, 0]);
-	
 	var viewMatrix = new Float32Array(16);
 	var projectionMatrix = new Float32Array(16);
 	
-	var shearMatrix = new Float32Array(16);
-	shearMatrix = identityMatrix.slice();
+	var shearMatrix = identityMatrix.slice();
 	
 	shearMatrix[4] = 0.4;
 	shearMatrix[6] = -0.4;
@@ -540,9 +544,11 @@ function main() {
 	glMatrix.mat4.lookAt(viewMatrix, cameraPosition, [0, 0, 0], [1, 0, 0]);
 	glMatrix.mat4.multiply(viewMatrix, viewMatrix, shearMatrix)
 	glMatrix.mat4.ortho(projectionMatrix, -15, 15, -15, 15, 0.1, 100);
-	//glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(90), 800 / 600, 0.1, 100);
+	
 
-    var positionAttribLocation = gl.getAttribLocation(program, 'vertexPosition');
+	
+	//Attribute locations
+	var positionAttribLocation = gl.getAttribLocation(program, 'vertexPosition');
 	gl.enableVertexAttribArray(positionAttribLocation);
 	
 	var normalAttribLocation = gl.getAttribLocation(program, 'vertexNormal');
@@ -551,16 +557,19 @@ function main() {
 	var colorAttribLocation = gl.getAttribLocation(program, 'vertexColor');
 	gl.enableVertexAttribArray(colorAttribLocation);
 	
+	
+	
+	//Creation of the buffers
 	var vertexBuffer = gl.createBuffer();	
 	var normalBuffer = gl.createBuffer();
 	var colorBuffer = gl.createBuffer();
 	var indexBuffer = gl.createBuffer();
 	
+	
+	
+	//Variables for the game logic etc.
 	var mouthOpeningCounter = 0;
 	var mouthOpening = true;
-	glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], glMatrix.glMatrix.toRadian(45), [0, 1, 0]);
-
-	var wholePlayerRotationMatrix = identityMatrix.slice();
 
 	var lastPlayerX;
 	var lastPlayerY;
@@ -568,8 +577,13 @@ function main() {
 	var playerY;
 	var plX;
 	var plY;
-		
-	var playerStanding = false;
+			
+	var pointCounter = 0;
+	
+	var pressedUp = false;
+	var pressedDown = false;
+	var pressedLeft = false;
+	var pressedRight = false;
 	
 	var up = false;
 	var down = false;
@@ -595,6 +609,16 @@ function main() {
 	var en2X;
 	var en2Y;
 	
+	var enemy1Up = false;
+	var enemy1Down = false;
+	var enemy1Left = false;
+	var enemy1Right = false;
+	
+	var enemy2Up = false;
+	var enemy2Down = false;
+	var enemy2Left = false;
+	var enemy2Right = false;
+	
 	var then = new Date().getTime();
 	var now;
 	var delta;
@@ -609,8 +633,9 @@ function main() {
 		enemySpeed = delta/150;
 		jumpingSpeed = delta/50;
 		
-		console.log(delta);
 		
+		
+		//Logic for the player
 		playerX = parseInt((halfSphereTranslationMatrices[0][14] + 16)/2);
 		playerY = parseInt(-(halfSphereTranslationMatrices[0][12] - 18)/2);
 		
@@ -670,124 +695,9 @@ function main() {
 			}
 		}
 
-		
 		lastPlayerX = playerX;
 		lastPlayerY = playerY;
-		
-		gl.clearColor(0.9, 0.9, 0.9, 1.0);
-		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-		gl.useProgram(program);
-		
-		var wholePlayerRotationMatrixUniformLocation = gl.getUniformLocation(program, 'wholePlayerRotationMatrix');
-		var rotationMatrixUniformLocation = gl.getUniformLocation(program, 'rotationMatrix');
-		var translationMatrixUniformLocation = gl.getUniformLocation(program, 'translationMatrix');
-		var scalingMatrixUniformLocation = gl.getUniformLocation(program, 'scalingMatrix');
-		var viewMatrixUniformLocation = gl.getUniformLocation(program, 'viewMatrix');
-		var projectionMatrixUniformLocation = gl.getUniformLocation(program, 'projectionMatrix');
-		var ambientColorUniformLocation = gl.getUniformLocation(program, 'ambientColor');
-		var diffuseColorUniformLocation = gl.getUniformLocation(program, 'diffuseColor');
-		var specularColorUniformLocation = gl.getUniformLocation(program, 'specularColor');
-		var lightPositionUniformLocation = gl.getUniformLocation(program, 'lightPosition');
-		var cameraPositionUniformLocation = gl.getUniformLocation(program, 'cameraPosition');
-		
-		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-		
-		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
-		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
-		gl.uniform3fv(specularColorUniformLocation, specularColor);
-		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
-		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
 
-		//Draw ground plane
-		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
-		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, groundPlaneRotationMatrix);
-		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, groundPlaneTranslationMatrix);
-		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneVertices), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneNormals), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneColors), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(groundPlaneIndices), gl.STATIC_DRAW);
-
-		gl.drawElements(gl.TRIANGLES, groundPlaneIndices.length, gl.UNSIGNED_SHORT, 0);
-		
-		
-		//Draw left eye
-		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
-		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
-		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
-		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(leftEyeVertices), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
-
-		gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
-		
-		
-		
-		//Draw right eye
-		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
-		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
-		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
-		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rightEyeVertices), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
-		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
-
-		gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
-		
-		mouthOpeningCounter++;
-		
-		if(mouthOpeningCounter == 10) {
-			mouthOpeningCounter = 0;
-			if(mouthOpening) {
-				mouthOpening = false;
-			} else {
-				mouthOpening = true;
-			}
-		}
-		
-		if (mouthOpening) {
-			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], -0.1, [0, 1, 0]);
-		} else {		
-			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], 0.1, [0, 1, 0]);
-		}
-		
 		if (up) {
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [playerSpeed, 0, 0]);				
 			glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [playerSpeed, 0, 0]);	
@@ -809,100 +719,35 @@ function main() {
 			glMatrix.mat4.translate(viewMatrix, viewMatrix, [0, 0, -playerSpeed]);
 		}
 		
-		//Draw halfSpheres
-		for(var i = 0; i < 2; i++) {
-			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
-			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[i]);
-			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[i]);
-			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-					
-			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereVertices), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereNormals), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereColors), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(halfSphereIndices), gl.STATIC_DRAW);
-			
-			gl.drawElements(gl.TRIANGLES, halfSphereIndices.length, gl.UNSIGNED_SHORT, 0);
-		}
-
 		
 		
-		//Draw cubes
-		for(var i = 0; i < labyrinth.length; i++) {
-			for(var j = 0; j < labyrinth[0].length; j++) {
-				if(labyrinth[i][j] == 1) {
-					
-					gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
-					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
-					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, cubeTranslationMatrices[i][j]);
-					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-							
-					gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-					
-					gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeNormals), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-					
-					gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeColors), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-					
-					gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-					gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeIndices), gl.STATIC_DRAW);
-					
-					gl.drawElements(gl.TRIANGLES, cubeIndices.length, gl.UNSIGNED_SHORT, 0);
-					
-				}
+		
+		
+		
+		//Mouth opening and closing
+		mouthOpeningCounter++;
+		
+		if(mouthOpeningCounter == 10) {
+			mouthOpeningCounter = 0;
+			if(mouthOpening) {
+				mouthOpening = false;
+			} else {
+				mouthOpening = true;
 			}
 		}
 		
-		
-		
-		
-		
-		//Draw dots
-		for(var i = 0; i < dotArray.length; i++) {
-			for(var j = 0; j < dotArray[0].length; j++) {
-				if(dotArray[i][j] == 0) {
-					
-					gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
-					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
-					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, dotTranslationMatrices[i][j]);
-					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, dotScalingMatrix);
-							
-					gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareVertices), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-					
-					gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareNormals), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-					
-					gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareColors), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-					
-					gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-					gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(squareIndices), gl.STATIC_DRAW);
-					
-					gl.drawElements(gl.TRIANGLES, squareIndices.length, gl.UNSIGNED_SHORT, 0);
-					
-				}
-			}
+		if (mouthOpening) {
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], -0.1, [0, 1, 0]);
+		} else {		
+			glMatrix.mat4.rotate(halfSphereRotationMatrices[1], halfSphereRotationMatrices[1], 0.1, [0, 1, 0]);
 		}
-
+		
+		
+		
+		
+		
+		
+		//Jumping
 		if(!jumping && dotArray[plY][plX] == 0) {
 			dotArray[plY][plX] = 1;
 			pointCounter++;
@@ -911,6 +756,38 @@ function main() {
 			pointSound.play();
 		}
 		
+		if(jumping) {
+
+			jumpingProgress = jumpingProgress + Math.PI/10;
+			
+			if(jumpingUp) {		
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, Math.sin(jumpingProgress)*jumpingSpeed, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, Math.sin(jumpingProgress)*jumpingSpeed, 0]);
+			} else if (jumpingDown) {
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -Math.sin(jumpingProgress)*jumpingSpeed, 0]);
+				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -Math.sin(jumpingProgress)*jumpingSpeed, 0]);
+			}
+			
+			if(jumpingUp && jumpingProgress == Math.PI) {
+				jumpingUp = false;
+				jumpingDown = true;
+				jumpingProgress = 0;
+			}
+			
+			if(jumpingDown && jumpingProgress == Math.PI) {
+				jumpingUp = false;
+				jumpingDown = false;
+				jumpingProgress = 0;
+				jumping = false;
+			}
+						
+		}
+		
+		
+		
+		
+		
+		//Restart game, when player has eaten all dots
 		var allDotsEaten = true;
 		
 		for(var i = 0; i < dotArray.length; i++) {
@@ -921,7 +798,6 @@ function main() {
 				}
 			}
 		}
-
 		
 		if(!jumping && allDotsEaten) {
 			dotArray  = labyrinth.map(inner => inner.slice());
@@ -973,35 +849,10 @@ function main() {
 		
 		
 		
-		if(jumping) {
-
-			jumpingProgress = jumpingProgress + Math.PI/10;
-			
-			if(jumpingUp) {		
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, Math.sin(jumpingProgress)*jumpingSpeed, 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, Math.sin(jumpingProgress)*jumpingSpeed, 0]);
-			} else if (jumpingDown) {
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[0], halfSphereTranslationMatrices[0], [0, -Math.sin(jumpingProgress)*jumpingSpeed, 0]);
-				glMatrix.mat4.translate(halfSphereTranslationMatrices[1], halfSphereTranslationMatrices[1], [0, -Math.sin(jumpingProgress)*jumpingSpeed, 0]);
-			}
-			
-			if(jumpingUp && jumpingProgress == Math.PI) {
-				jumpingUp = false;
-				jumpingDown = true;
-				jumpingProgress = 0;
-			}
-			
-			if(jumpingDown && jumpingProgress == Math.PI) {
-				jumpingUp = false;
-				jumpingDown = false;
-				jumpingProgress = 0;
-				jumping = false;
-			}
-						
-		}
-		
 
 		
+
+		//Logic for first enemy
 		enemy1X = parseInt((enemyHalfSphereTranslationMatrices[0][14] + 16)/2);
 		enemy1Y = parseInt(-(enemyHalfSphereTranslationMatrices[0][12] - 18)/2);
 		
@@ -1106,7 +957,7 @@ function main() {
 		
 		
 		
-		
+		//Logic for second enemy
 		enemy2X = parseInt((enemyHalfSphereTranslationMatrices[1][14] + 16)/2);
 		enemy2Y = parseInt(-(enemyHalfSphereTranslationMatrices[1][12] - 18)/2);
 		
@@ -1206,109 +1057,23 @@ function main() {
 		
 		lastEnemy2X = enemy2X;
 		lastEnemy2Y = enemy2Y;
-	
-		for(var i = 0; i < 2; i++) {
 		
-			//Draw cylinder for enemy
-			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
-			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
-			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyCylinderTranslationMatrices[i]);
-			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-					
-			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderVertices), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderNormals), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderColors[i]), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinderIndices), gl.STATIC_DRAW);
-			
-			gl.drawElements(gl.TRIANGLES, cylinderIndices.length, gl.UNSIGNED_SHORT, 0);
-			
-			
-			//Draw halfsphere for enemy
-			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
-			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
-			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
-			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
-			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrices[i]);
-			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-					
-			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereVertices), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereNormals), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderColors[i]), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(halfSphereIndices), gl.STATIC_DRAW);
-			
-			gl.drawElements(gl.TRIANGLES, halfSphereIndices.length, gl.UNSIGNED_SHORT, 0);
-			
-			//Draw left eye for enemy
-			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
-			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
-			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrices[i]);
-			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(leftEyeVertices), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
-
-			gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
-			
-
-			//Draw right eye for enemy
-			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
-			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
-			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrices[i]);
-			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rightEyeVertices), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeNormals), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-			
-			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(playerEyeColors), gl.STATIC_DRAW);
-			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
-
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(playerEyeIndices), gl.STATIC_DRAW);
-
-			gl.drawElements(gl.TRIANGLES, playerEyeIndices.length, gl.UNSIGNED_SHORT, 0);
-				
-		}
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//Restart game if player collides with an enemy
 		if(!jumping && ((plX == en1X && plY == en1Y) || (plX == en2X && plY == en2Y))) {
 			dotArray  = labyrinth.map(inner => inner.slice());
 			dotArray[8][7] = 1;
@@ -1355,6 +1120,316 @@ function main() {
 			backgroundMusic.pause();
 			
 			loseSound.play();
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//Draw everything
+		gl.clearColor(0.9, 0.9, 0.9, 1.0);
+		gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+		gl.useProgram(program);
+		
+		var wholePlayerRotationMatrixUniformLocation = gl.getUniformLocation(program, 'wholePlayerRotationMatrix');
+		var rotationMatrixUniformLocation = gl.getUniformLocation(program, 'rotationMatrix');
+		var translationMatrixUniformLocation = gl.getUniformLocation(program, 'translationMatrix');
+		var scalingMatrixUniformLocation = gl.getUniformLocation(program, 'scalingMatrix');
+		var viewMatrixUniformLocation = gl.getUniformLocation(program, 'viewMatrix');
+		var projectionMatrixUniformLocation = gl.getUniformLocation(program, 'projectionMatrix');
+		var ambientColorUniformLocation = gl.getUniformLocation(program, 'ambientColor');
+		var diffuseColorUniformLocation = gl.getUniformLocation(program, 'diffuseColor');
+		var specularColorUniformLocation = gl.getUniformLocation(program, 'specularColor');
+		var lightPositionUniformLocation = gl.getUniformLocation(program, 'lightPosition');
+		var cameraPositionUniformLocation = gl.getUniformLocation(program, 'cameraPosition');
+		
+		gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+		gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+		
+		gl.uniform3fv(ambientColorUniformLocation, ambientColor);
+		gl.uniform3fv(diffuseColorUniformLocation, diffuseColor);
+		gl.uniform3fv(specularColorUniformLocation, specularColor);
+		gl.uniform3fv(lightPositionUniformLocation, lightPosition);
+		gl.uniform3fv(cameraPositionUniformLocation, cameraPosition);
+
+		
+		//Draw ground plane
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, groundPlaneRotationMatrix);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, groundPlaneTranslationMatrix);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(groundPlaneColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(groundPlaneIndices), gl.STATIC_DRAW);
+
+		gl.drawElements(gl.TRIANGLES, groundPlaneIndices.length, gl.UNSIGNED_SHORT, 0);
+		
+		
+		//Draw cubes for labyrinth
+		for(var i = 0; i < labyrinth.length; i++) {
+			for(var j = 0; j < labyrinth[0].length; j++) {
+				if(labyrinth[i][j] == 1) {
+					
+					gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, cubeTranslationMatrices[i][j]);
+					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+							
+					gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeNormals), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeColors), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+					gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeIndices), gl.STATIC_DRAW);
+					
+					gl.drawElements(gl.TRIANGLES, cubeIndices.length, gl.UNSIGNED_SHORT, 0);
+					
+				}
+			}
+		}
+		
+		
+		
+	
+		//Draw both halfSpheres for player
+		for(var i = 0; i < 2; i++) {
+			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
+			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[i]);
+			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[i]);
+			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+					
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereVertices), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereNormals), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereColors), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(halfSphereIndices), gl.STATIC_DRAW);
+			
+			gl.drawElements(gl.TRIANGLES, halfSphereIndices.length, gl.UNSIGNED_SHORT, 0);
+		}
+
+		
+		//Draw left eye for player
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(leftEyeVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(eyeNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(eyeColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(eyeIndices), gl.STATIC_DRAW);
+
+		gl.drawElements(gl.TRIANGLES, eyeIndices.length, gl.UNSIGNED_SHORT, 0);
+		
+		
+		//Draw right eye for player
+		gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholePlayerRotationMatrix);
+		gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, halfSphereRotationMatrices[1]);
+		gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, halfSphereTranslationMatrices[1]);
+		gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rightEyeVertices), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(eyeNormals), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(eyeColors), gl.STATIC_DRAW);
+		gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(eyeIndices), gl.STATIC_DRAW);
+
+		gl.drawElements(gl.TRIANGLES, eyeIndices.length, gl.UNSIGNED_SHORT, 0);
+		
+
+		
+		
+		//Draw dots, which player can eat
+		for(var i = 0; i < dotArray.length; i++) {
+			for(var j = 0; j < dotArray[0].length; j++) {
+				if(dotArray[i][j] == 0) {
+					
+					gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+					gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+					gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, dotTranslationMatrices[i][j]);
+					gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, dotScalingMatrix);
+							
+					gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareVertices), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareNormals), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareColors), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+					
+					gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+					gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(squareIndices), gl.STATIC_DRAW);
+					
+					gl.drawElements(gl.TRIANGLES, squareIndices.length, gl.UNSIGNED_SHORT, 0);
+					
+				}
+			}
+		}
+
+		
+	
+		for(var i = 0; i < 2; i++) {
+		
+			//Draw cylinder (torso) for enemy
+			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
+			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, identityMatrix);
+			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyCylinderTranslationMatrices[i]);
+			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+					
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderVertices), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderNormals), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderColors[i]), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinderIndices), gl.STATIC_DRAW);
+			
+			gl.drawElements(gl.TRIANGLES, cylinderIndices.length, gl.UNSIGNED_SHORT, 0);
+			
+			
+			//Draw halfsphere (head) for enemy
+			gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+			gl.uniformMatrix4fv(projectionMatrixUniformLocation, gl.FALSE, projectionMatrix);
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
+			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
+			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrices[i]);
+			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+					
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereVertices), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(halfSphereNormals), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinderColors[i]), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(halfSphereIndices), gl.STATIC_DRAW);
+			
+			gl.drawElements(gl.TRIANGLES, halfSphereIndices.length, gl.UNSIGNED_SHORT, 0);
+			
+			
+			//Draw left eye for enemy
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
+			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
+			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrices[i]);
+			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(leftEyeVertices), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(eyeNormals), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(eyeColors), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(eyeIndices), gl.STATIC_DRAW);
+
+			gl.drawElements(gl.TRIANGLES, eyeIndices.length, gl.UNSIGNED_SHORT, 0);
+			
+
+			//Draw right eye for enemy
+			gl.uniformMatrix4fv(wholePlayerRotationMatrixUniformLocation, gl.FALSE, wholeEnemyRotationMatrices[i]);
+			gl.uniformMatrix4fv(rotationMatrixUniformLocation, gl.FALSE, enemyHalfSphereRotationMatrix);
+			gl.uniformMatrix4fv(translationMatrixUniformLocation, gl.FALSE, enemyHalfSphereTranslationMatrices[i]);
+			gl.uniformMatrix4fv(scalingMatrixUniformLocation, gl.FALSE, identityMatrix);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rightEyeVertices), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(eyeNormals), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(normalAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(eyeColors), gl.STATIC_DRAW);
+			gl.vertexAttribPointer(colorAttribLocation, 3, gl.FLOAT, gl.FALSE, 3 * Float32Array.BYTES_PER_ELEMENT, 0);
+
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(eyeIndices), gl.STATIC_DRAW);
+
+			gl.drawElements(gl.TRIANGLES, eyeIndices.length, gl.UNSIGNED_SHORT, 0);
+				
 		}
 			
 		requestAnimationFrame(loop);
