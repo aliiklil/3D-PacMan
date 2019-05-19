@@ -631,8 +631,8 @@ function main() {
 		
 		playerSpeed = delta/100;
 		enemySpeed = delta/150;
-		jumpingSpeed = delta/50;
-		
+		jumpingSpeed = 0.8; //If jumping depends on time, the jumps will be higher with low frame rates
+		console.log(delta)
 		
 		
 		//Logic for the player
