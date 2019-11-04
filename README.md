@@ -8,12 +8,12 @@
 Tested on Google Chrome. On Firefox there can be problems with some sound effects.
 
 ## Controls:
--Movement with arrow keys
--Space for jumping (it's possible to jump over enemies, but not over walls)
+- Movement with arrow keys
+- Space for jumping (it's possible to jump over enemies, but not over walls)
 
 
 ## Music/sound effect sources:
-- https://ericskiff.com/music/
+- Music: Eric Skiff - Song Name - Resistor Anthems - Available at http://EricSkiff.com/music
 - https://freesound.org/people/LittleRobotSoundFactory/sounds/270333/
 - https://freesound.org/people/LittleRobotSoundFactory/sounds/270329/
 - https://freesound.org/people/LittleRobotSoundFactory/sounds/270323/
