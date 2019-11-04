@@ -1,6 +1,10 @@
 # 3D PacMan 
 3D PacMan is a game I made with JavaScript and WebGL for a computer graphics course.
 
+<p align="center">
+  <img width="405" height="292" src="pacman.png?raw=true">
+</p>
+
 Tested on Google Chrome. On Firefox there can be problems with some sound effects.
 
 ## Controls:
